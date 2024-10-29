@@ -3,7 +3,7 @@ import SwiftUI
 struct HomeView: View {
     @State private var totalExpense: Double = 0.0
     @State private var selectedCurrency: String = UserDefaults.standard.string(forKey: "currency") ?? "USD"
-    @State private var friends: [Friend] = loadFriends() // Load friends list from UserDefaults
+    @State private var friends: [Friend] = loadFriends()
     @State private var newFriendName: String = ""
 
     var body: some View {
@@ -25,7 +25,7 @@ struct HomeView: View {
                     .onDelete(perform: deleteFriend)
                 }
                 
-                // Add Friend Section
+            
                 HStack {
                     TextField("Add Friend", text: $newFriendName)
                         .textFieldStyle(RoundedBorderTextFieldStyle())

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var selectedCurrency: String = UserDefaults.standard.string(forKey: "currency") ?? "USD"
+    @AppStorage("currency") private var selectedCurrency: String = "USD"
     private let currencies = ["USD", "EUR", "GBP", "INR", "JPY", "AUD", "CAD"]
 
     var body: some View {

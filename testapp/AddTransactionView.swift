@@ -4,7 +4,7 @@ struct AddTransactionView: View {
     @Binding var totalExpense: Double
     @Binding var transactions: [UserExpense]
     @Binding var friends: [Friend]
-    @Binding var selectedCurrency: String // New binding for selected currency
+    @AppStorage("currency") private var selectedCurrency: String = "USD"
     @Environment(\.presentationMode) var presentationMode
     @State private var amount: String = ""
     @State private var description: String = ""
@@ -19,19 +19,7 @@ struct AddTransactionView: View {
     var body: some View {
         NavigationView {
             VStack {
-                HStack {
-                    Button(action: {
-                        presentationMode.wrappedValue.dismiss()
-                    }) {
-                        Image(systemName: "xmark")
-                            .font(.title)
-                    }
-                    .padding()
-                    Spacer()
-                }
-
                 Form {
-                    // Amount Field
                     TextField("Amount", text: $amount)
                         .keyboardType(.decimalPad)
                         .overlay(
@@ -40,17 +28,13 @@ struct AddTransactionView: View {
                                 .padding(.trailing, 8),
                             alignment: .trailing
                         )
-
                     // Friend Selection Picker
-                    Section(header: Text("Who Paid?")) {
-                        Picker("Select Friend", selection: $selectedFriend) {
-                            ForEach(friends, id: \.id) { friend in
+                        Picker("Who Paid", selection: $selectedFriend) {
+                            ForEach(friends) { friend in
                                 Text(friend.name).tag(friend as Friend?)
                             }
                         }
                         .pickerStyle(MenuPickerStyle())
-                    }
-
                     // Description Field
                     TextField("Description (optional)", text: $description)
 
@@ -90,6 +74,16 @@ struct AddTransactionView: View {
                         distributeAmountEvenly()
                     }
                 }
+                .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button(action: {
+                                presentationMode.wrappedValue.dismiss()
+                            }) {
+                                Image(systemName: "xmark")
+                                    .font(.title2)
+                            }
+                        }
+                    }
             }
         }
     }
@@ -124,9 +118,10 @@ struct AddTransactionView: View {
             }
         }
 
-        let newExpense = UserExpense(amount: totalAmount, date: Date(), description: description.isEmpty ? nil : description, splitDetails: splitDetails)
+        let newExpense = UserExpense(amount: totalAmount, date: Date(), description: description.isEmpty ? nil : description, splitDetails: splitDetails, participants: friends.map { $0.name })
         transactions.append(newExpense)
         saveTransactions(transactions)
         totalExpense += newExpense.amount
     }
 }
+

@@ -12,5 +12,7 @@ public struct UserExpense: Identifiable, Codable {
     var amount: Double
     var date: Date
     var description: String?
-    var splitDetails: [String: Double] // Dictionary mapping each friend's name to their share
+    var splitDetails: [String: Double]
+    var participants: [String]
+    var payer: String?
 }

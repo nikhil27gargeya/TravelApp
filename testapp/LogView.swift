@@ -9,11 +9,11 @@ extension DateFormatter {
 }
 
 struct LogView: View {
-    @State private var selectedCurrency = "USD"
+    @AppStorage("currency") private var selectedCurrency: String = "USD"
     @State private var transactions: [UserExpense] = loadTransactions() // Load transactions
     @State private var showAddTransaction = false // State variable for showing the Add Transaction view
     @State private var totalExpense: Double = 0.0 // Manage totalExpense in LogView
-    @State private var friends: [Friend] = loadFriends() // Load friends list
+    @State var friends: [Friend] = loadFriends() // Load friends list
 
     var body: some View {
         NavigationView {
@@ -26,12 +26,27 @@ struct LogView: View {
                     }
                     .padding()
                     
+                    // Check if there are any statements to display
+                    let oweStatements = getOweStatements() // No argument needed here
+                    if oweStatements.isEmpty {
+                        Text("No outstanding debts.")
+                            .foregroundColor(.gray)
+                    } else {
+                        List { // Wrap Section in a List
+                            Section(header: Text("Who Owes Who")) {
+                                ForEach(oweStatements, id: \.self) { statement in
+                                    Text(statement)
+                                }
+                            }
+                        }
+                    }
+                    
                     // Transactions List
                     List {
                         ForEach(transactions) { transaction in
                             VStack(alignment: .leading) {
                                 Text(transaction.description ?? "No Description")
-                                Text("Amount: \(transaction.amount, specifier: "%.2f")")
+                                Text("Amount: \(String(format: "%.2f", transaction.amount))")
                                 Text("Date: \(transaction.date, formatter: DateFormatter.shortDate)")
                             }
                         }
@@ -61,12 +76,36 @@ struct LogView: View {
                     }
                 }
                 .sheet(isPresented: $showAddTransaction) {
-                    AddTransactionView(totalExpense: $totalExpense, transactions: $transactions, friends: $friends, selectedCurrency: $selectedCurrency)
+                    AddTransactionView(totalExpense: $totalExpense, transactions: $transactions, friends: $friends)
                 }
             }
         }
     }
     
+    private func getOweStatements() -> [String] {
+        var statements: [String] = []
+
+        // Calculate total owed for each friend
+        var totalOwed = [String: Double]() // A dictionary to track total owed by each friend
+
+        for transaction in transactions {
+            let splitAmount = transaction.amount / Double(transaction.participants.count)
+
+            for friend in transaction.participants {
+                // Accumulate amounts owed per friend
+                totalOwed[friend, default: 0] += splitAmount
+            }
+        }
+
+        // Generate statements
+        for (friend, owedAmount) in totalOwed {
+            if let debtor = friends.first(where: { $0.name == friend }) {
+                statements.append("\(debtor.name) owes \(selectedCurrency) \(String(format: "%.2f", owedAmount))")
+            }
+        }
+
+        return statements
+    }
 
     // Delete transaction at specified index
     private func deleteTransaction(at offsets: IndexSet) {
