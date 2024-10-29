@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7D7861C92CD17EA900A88CE2 /* UserExpense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7861C82CD17EA900A88CE2 /* UserExpense.swift */; };
 		7DF97C4D2CD0980500A3B552 /* testappApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF97C4C2CD0980500A3B552 /* testappApp.swift */; };
 		7DF97C4F2CD0980500A3B552 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF97C4E2CD0980500A3B552 /* ContentView.swift */; };
 		7DF97C512CD0980500A3B552 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DF97C502CD0980500A3B552 /* Assets.xcassets */; };
@@ -14,6 +15,12 @@
 		7DF97C5E2CD0980600A3B552 /* testappTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF97C5D2CD0980600A3B552 /* testappTests.swift */; };
 		7DF97C682CD0980600A3B552 /* testappUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF97C672CD0980600A3B552 /* testappUITests.swift */; };
 		7DF97C6A2CD0980600A3B552 /* testappUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF97C692CD0980600A3B552 /* testappUITestsLaunchTests.swift */; };
+		7DF97C772CD098C900A3B552 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF97C762CD098C900A3B552 /* HomeView.swift */; };
+		7DF97C792CD098CF00A3B552 /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF97C782CD098CF00A3B552 /* LogView.swift */; };
+		7DF97C7D2CD0996900A3B552 /* AddTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF97C7C2CD0996900A3B552 /* AddTransactionView.swift */; };
+		7DF97C7F2CD099BA00A3B552 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF97C7E2CD099BA00A3B552 /* SettingsView.swift */; };
+		7DF97C812CD09AEC00A3B552 /* ReceiptScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF97C802CD09AEC00A3B552 /* ReceiptScannerView.swift */; };
+		7DF97C8A2CD160B900A3B552 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF97C892CD160B900A3B552 /* Friend.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +41,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7D7861C82CD17EA900A88CE2 /* UserExpense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserExpense.swift; sourceTree = "<group>"; };
 		7DF97C492CD0980500A3B552 /* testapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = testapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DF97C4C2CD0980500A3B552 /* testappApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testappApp.swift; sourceTree = "<group>"; };
 		7DF97C4E2CD0980500A3B552 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -44,6 +52,12 @@
 		7DF97C632CD0980600A3B552 /* testappUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = testappUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DF97C672CD0980600A3B552 /* testappUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testappUITests.swift; sourceTree = "<group>"; };
 		7DF97C692CD0980600A3B552 /* testappUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testappUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		7DF97C762CD098C900A3B552 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		7DF97C782CD098CF00A3B552 /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
+		7DF97C7C2CD0996900A3B552 /* AddTransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTransactionView.swift; sourceTree = "<group>"; };
+		7DF97C7E2CD099BA00A3B552 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		7DF97C802CD09AEC00A3B552 /* ReceiptScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScannerView.swift; sourceTree = "<group>"; };
+		7DF97C892CD160B900A3B552 /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +109,13 @@
 			isa = PBXGroup;
 			children = (
 				7DF97C4C2CD0980500A3B552 /* testappApp.swift */,
+				7DF97C762CD098C900A3B552 /* HomeView.swift */,
+				7DF97C782CD098CF00A3B552 /* LogView.swift */,
+				7D7861C82CD17EA900A88CE2 /* UserExpense.swift */,
+				7DF97C892CD160B900A3B552 /* Friend.swift */,
+				7DF97C7C2CD0996900A3B552 /* AddTransactionView.swift */,
+				7DF97C802CD09AEC00A3B552 /* ReceiptScannerView.swift */,
+				7DF97C7E2CD099BA00A3B552 /* SettingsView.swift */,
 				7DF97C4E2CD0980500A3B552 /* ContentView.swift */,
 				7DF97C502CD0980500A3B552 /* Assets.xcassets */,
 				7DF97C522CD0980500A3B552 /* Preview Content */,
@@ -257,8 +278,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7DF97C7F2CD099BA00A3B552 /* SettingsView.swift in Sources */,
 				7DF97C4F2CD0980500A3B552 /* ContentView.swift in Sources */,
+				7DF97C772CD098C900A3B552 /* HomeView.swift in Sources */,
+				7D7861C92CD17EA900A88CE2 /* UserExpense.swift in Sources */,
+				7DF97C792CD098CF00A3B552 /* LogView.swift in Sources */,
+				7DF97C812CD09AEC00A3B552 /* ReceiptScannerView.swift in Sources */,
+				7DF97C7D2CD0996900A3B552 /* AddTransactionView.swift in Sources */,
 				7DF97C4D2CD0980500A3B552 /* testappApp.swift in Sources */,
+				7DF97C8A2CD160B900A3B552 /* Friend.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

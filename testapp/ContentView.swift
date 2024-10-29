@@ -1,21 +1,23 @@
-//
-//  ContentView.swift
-//  testapp
-//
-//  Created by Nikhil Gargeya on 10/28/24.
-//
-
 import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        TabView {
+            HomeView()
+                .tabItem {
+                    Label("Home", systemImage: "house")
+                }
+
+            LogView()
+                .tabItem {
+                    Label("Log", systemImage: "list.bullet")
+                }
+
+            SettingsView()
+                .tabItem {
+                    Label("Settings", systemImage: "gear")
+                }
         }
-        .padding()
     }
 }
 
