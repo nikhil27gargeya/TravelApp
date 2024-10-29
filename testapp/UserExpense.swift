@@ -14,5 +14,6 @@ public struct UserExpense: Identifiable, Codable {
     var description: String?
     var splitDetails: [String: Double]
     var participants: [String]
-    var payer: String?
+    var payer: String
+    
 }

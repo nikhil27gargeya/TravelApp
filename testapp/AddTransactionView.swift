@@ -10,12 +10,12 @@ struct AddTransactionView: View {
     @State private var description: String = ""
     @State private var splitType: SplitType = .evenly
     @State private var selectedFriend: Friend?
-
+    
     enum SplitType: String, CaseIterable {
         case evenly = "Split Evenly"
         case custom = "Custom Split"
     }
-
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -29,15 +29,15 @@ struct AddTransactionView: View {
                             alignment: .trailing
                         )
                     // Friend Selection Picker
-                        Picker("Who Paid", selection: $selectedFriend) {
-                            ForEach(friends) { friend in
-                                Text(friend.name).tag(friend as Friend?)
-                            }
+                    Picker("Who Paid", selection: $selectedFriend) {
+                        ForEach(friends) { friend in
+                            Text(friend.name).tag(friend as Friend?)
                         }
-                        .pickerStyle(MenuPickerStyle())
+                    }
+                    .pickerStyle(MenuPickerStyle())
                     // Description Field
                     TextField("Description (optional)", text: $description)
-
+                    
                     // Split Type Picker
                     Picker("Split Type", selection: $splitType) {
                         ForEach(SplitType.allCases, id: \.self) { type in
@@ -46,7 +46,7 @@ struct AddTransactionView: View {
                     }
                     .pickerStyle(SegmentedPickerStyle())
                     .padding()
-
+                    
                     // Custom Split Section
                     if splitType == .custom {
                         Section(header: Text("Custom Split")) {
@@ -61,7 +61,7 @@ struct AddTransactionView: View {
                             }
                         }
                     }
-
+                    
                     // Save Button
                     Button("Save") {
                         saveTransaction()
@@ -75,19 +75,19 @@ struct AddTransactionView: View {
                     }
                 }
                 .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button(action: {
-                                presentationMode.wrappedValue.dismiss()
-                            }) {
-                                Image(systemName: "xmark")
-                                    .font(.title2)
-                            }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            presentationMode.wrappedValue.dismiss()
+                        }) {
+                            Image(systemName: "xmark")
+                                .font(.title2)
                         }
                     }
+                }
             }
         }
     }
-
+    
     private func getFormattedAmount() -> String {
         guard let amountValue = Double(amount) else { return "" }
         let formatter = NumberFormatter()
@@ -95,18 +95,18 @@ struct AddTransactionView: View {
         formatter.currencyCode = selectedCurrency // Set the currency code based on the user's selection
         return formatter.string(from: NSNumber(value: amountValue)) ?? ""
     }
-
+    
     private func distributeAmountEvenly() {
         guard let total = Double(amount), friends.count > 0 else { return }
         let share = total / Double(friends.count)
         friends = friends.map { Friend(name: $0.name, share: share) }
     }
-
+    
     private func saveTransaction() {
         guard let totalAmount = Double(amount), let paidBy = selectedFriend else { return }
-
+        
         var splitDetails: [String: Double] = [:]
-
+        
         if splitType == .evenly {
             let share = totalAmount / Double(friends.count)
             for friend in friends {
@@ -117,11 +117,21 @@ struct AddTransactionView: View {
                 splitDetails[friend.name] = friend.share
             }
         }
-
-        let newExpense = UserExpense(amount: totalAmount, date: Date(), description: description.isEmpty ? nil : description, splitDetails: splitDetails, participants: friends.map { $0.name })
+        
+        // Create a new expense, including the payer
+        let newExpense = UserExpense(
+            amount: totalAmount,
+            date: Date(),
+            description: description.isEmpty ? nil : description,
+            splitDetails: splitDetails,
+            participants: friends.map { $0.name },
+            payer: paidBy.name // Use the selected friend's name as the payer
+        )
+        
         transactions.append(newExpense)
         saveTransactions(transactions)
         totalExpense += newExpense.amount
     }
 }
+
 

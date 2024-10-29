@@ -25,7 +25,7 @@ struct LogView: View {
                             .font(.headline)
                     }
                     .padding()
-                    
+
                     // Check if there are any statements to display
                     let oweStatements = getOweStatements() // No argument needed here
                     if oweStatements.isEmpty {
@@ -46,6 +46,7 @@ struct LogView: View {
                         ForEach(transactions) { transaction in
                             VStack(alignment: .leading) {
                                 Text(transaction.description ?? "No Description")
+                                Text("Paid by: \(transaction.payer)") // Display the payer
                                 Text("Amount: \(String(format: "%.2f", transaction.amount))")
                                 Text("Date: \(transaction.date, formatter: DateFormatter.shortDate)")
                             }
@@ -84,28 +85,31 @@ struct LogView: View {
     
     private func getOweStatements() -> [String] {
         var statements: [String] = []
+        var totalOwed = [String: [String: Double]]() // Track how much each friend owes to others
 
         // Calculate total owed for each friend
-        var totalOwed = [String: Double]() // A dictionary to track total owed by each friend
-
         for transaction in transactions {
             let splitAmount = transaction.amount / Double(transaction.participants.count)
-
+            
+            // Exclude the payer from the debt calculation
             for friend in transaction.participants {
-                // Accumulate amounts owed per friend
-                totalOwed[friend, default: 0] += splitAmount
+                // Skip the payer for this transaction
+                if friend != transaction.payer {
+                    totalOwed[friend, default: [:]][transaction.payer, default: 0] += splitAmount
+                }
             }
         }
 
         // Generate statements
-        for (friend, owedAmount) in totalOwed {
-            if let debtor = friends.first(where: { $0.name == friend }) {
-                statements.append("\(debtor.name) owes \(selectedCurrency) \(String(format: "%.2f", owedAmount))")
+        for (debtor, owedAmounts) in totalOwed {
+            for (creditor, amount) in owedAmounts {
+                statements.append("\(debtor) owes \(creditor) \(selectedCurrency) \(String(format: "%.2f", amount))")
             }
         }
 
         return statements
     }
+
 
     // Delete transaction at specified index
     private func deleteTransaction(at offsets: IndexSet) {
