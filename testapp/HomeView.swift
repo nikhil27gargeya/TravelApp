@@ -5,6 +5,7 @@ struct HomeView: View {
     @State private var selectedCurrency: String = UserDefaults.standard.string(forKey: "currency") ?? "USD"
     @State private var friends: [Friend] = loadFriends()
     @State private var newFriendName: String = ""
+    @State private var jokes: String = ""
 
     var body: some View {
         VStack {
