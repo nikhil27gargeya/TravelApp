@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7D4045672CD2113900200DFE /* CalculateReceipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4045662CD2113900200DFE /* CalculateReceipt.swift */; };
 		7D7861C92CD17EA900A88CE2 /* UserExpense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7861C82CD17EA900A88CE2 /* UserExpense.swift */; };
+		7DE81B142CD1ACBE0087B521 /* CalculationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE81B132CD1ACBE0087B521 /* CalculationView.swift */; };
+		7DE81B162CD1C4540087B521 /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE81B152CD1C4540087B521 /* TextRecognizer.swift */; };
 		7DF97C4D2CD0980500A3B552 /* testappApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF97C4C2CD0980500A3B552 /* testappApp.swift */; };
 		7DF97C4F2CD0980500A3B552 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF97C4E2CD0980500A3B552 /* ContentView.swift */; };
 		7DF97C512CD0980500A3B552 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DF97C502CD0980500A3B552 /* Assets.xcassets */; };
@@ -41,7 +44,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7D4045662CD2113900200DFE /* CalculateReceipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateReceipt.swift; sourceTree = "<group>"; };
 		7D7861C82CD17EA900A88CE2 /* UserExpense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserExpense.swift; sourceTree = "<group>"; };
+		7DE81B132CD1ACBE0087B521 /* CalculationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculationView.swift; sourceTree = "<group>"; };
+		7DE81B152CD1C4540087B521 /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
 		7DF97C492CD0980500A3B552 /* testapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = testapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DF97C4C2CD0980500A3B552 /* testappApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testappApp.swift; sourceTree = "<group>"; };
 		7DF97C4E2CD0980500A3B552 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -111,10 +117,13 @@
 				7DF97C4C2CD0980500A3B552 /* testappApp.swift */,
 				7DF97C762CD098C900A3B552 /* HomeView.swift */,
 				7DF97C782CD098CF00A3B552 /* LogView.swift */,
+				7DE81B132CD1ACBE0087B521 /* CalculationView.swift */,
 				7D7861C82CD17EA900A88CE2 /* UserExpense.swift */,
 				7DF97C892CD160B900A3B552 /* Friend.swift */,
 				7DF97C7C2CD0996900A3B552 /* AddTransactionView.swift */,
 				7DF97C802CD09AEC00A3B552 /* ReceiptScannerView.swift */,
+				7D4045662CD2113900200DFE /* CalculateReceipt.swift */,
+				7DE81B152CD1C4540087B521 /* TextRecognizer.swift */,
 				7DF97C7E2CD099BA00A3B552 /* SettingsView.swift */,
 				7DF97C4E2CD0980500A3B552 /* ContentView.swift */,
 				7DF97C502CD0980500A3B552 /* Assets.xcassets */,
@@ -281,11 +290,14 @@
 				7DF97C7F2CD099BA00A3B552 /* SettingsView.swift in Sources */,
 				7DF97C4F2CD0980500A3B552 /* ContentView.swift in Sources */,
 				7DF97C772CD098C900A3B552 /* HomeView.swift in Sources */,
+				7D4045672CD2113900200DFE /* CalculateReceipt.swift in Sources */,
 				7D7861C92CD17EA900A88CE2 /* UserExpense.swift in Sources */,
+				7DE81B162CD1C4540087B521 /* TextRecognizer.swift in Sources */,
 				7DF97C792CD098CF00A3B552 /* LogView.swift in Sources */,
 				7DF97C812CD09AEC00A3B552 /* ReceiptScannerView.swift in Sources */,
 				7DF97C7D2CD0996900A3B552 /* AddTransactionView.swift in Sources */,
 				7DF97C4D2CD0980500A3B552 /* testappApp.swift in Sources */,
+				7DE81B142CD1ACBE0087B521 /* CalculationView.swift in Sources */,
 				7DF97C8A2CD160B900A3B552 /* Friend.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -442,12 +454,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"testapp/Preview Content\"";
 				DEVELOPMENT_TEAM = 9773C663L2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = testappppp;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Need camera access to scan receipt for expense tracking";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -458,8 +473,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = NG.testapp;
+				PRODUCT_BUNDLE_IDENTIFIER = NG.testappppp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -471,12 +487,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"testapp/Preview Content\"";
 				DEVELOPMENT_TEAM = 9773C663L2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = testappppp;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Need camera access to scan receipt for expense tracking";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -487,8 +506,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = NG.testapp;
+				PRODUCT_BUNDLE_IDENTIFIER = NG.testappppp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

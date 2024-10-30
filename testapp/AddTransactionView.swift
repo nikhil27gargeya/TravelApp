@@ -10,12 +10,17 @@ struct AddTransactionView: View {
     @State private var description: String = ""
     @State private var splitType: SplitType = .evenly
     @State private var selectedFriend: Friend?
-    
+    @State private var showReceiptScanner = false // State variable for the receipt scanner
+    @State private var scannedText: String = "" // State variable to hold scanned text
+    @State private var parsedItems: [(String, Double)] = []
+    @State private var tax: Double = 0.0 // Add tax state variable
+    @State private var total: Double = 0.0
+
     enum SplitType: String, CaseIterable {
         case evenly = "Split Evenly"
         case custom = "Custom Split"
     }
-    
+
     var body: some View {
         NavigationView {
             VStack {
@@ -35,6 +40,7 @@ struct AddTransactionView: View {
                         }
                     }
                     .pickerStyle(MenuPickerStyle())
+                    
                     // Description Field
                     TextField("Description (optional)", text: $description)
                     
@@ -54,14 +60,14 @@ struct AddTransactionView: View {
                                 HStack {
                                     Text(friend.name)
                                     Spacer()
-                                    TextField("Amount", value: $friend.share, format: .currency(code: selectedCurrency)) // Use the selected currency
+                                    TextField("Amount", value: $friend.share, format: .currency(code: selectedCurrency))
                                         .keyboardType(.decimalPad)
                                         .frame(width: 100)
                                 }
                             }
                         }
                     }
-                    
+
                     // Save Button
                     Button("Save") {
                         saveTransaction()
@@ -74,6 +80,16 @@ struct AddTransactionView: View {
                         distributeAmountEvenly()
                     }
                 }
+                
+                // Scan Receipt Button
+                Button("Scan Receipt") {
+                    showReceiptScanner.toggle() // Toggle the scanner view
+                }
+                .foregroundColor(.green)
+                .padding()
+                .background(Color.gray.opacity(0.2))
+                .cornerRadius(8)
+                
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
@@ -85,23 +101,27 @@ struct AddTransactionView: View {
                     }
                 }
             }
+            // Present the ReceiptScannerView when showReceiptScanner is true
+            .sheet(isPresented: $showReceiptScanner) {
+                ReceiptScannerView(scannedText: $scannedText, parsedItems: $parsedItems, tax: $tax, total: $total)
+            }
         }
     }
-    
+
     private func getFormattedAmount() -> String {
         guard let amountValue = Double(amount) else { return "" }
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.currencyCode = selectedCurrency // Set the currency code based on the user's selection
+        formatter.currencyCode = selectedCurrency
         return formatter.string(from: NSNumber(value: amountValue)) ?? ""
     }
-    
+
     private func distributeAmountEvenly() {
         guard let total = Double(amount), friends.count > 0 else { return }
         let share = total / Double(friends.count)
         friends = friends.map { Friend(name: $0.name, share: share) }
     }
-    
+
     private func saveTransaction() {
         guard let totalAmount = Double(amount), let paidBy = selectedFriend else { return }
         
@@ -133,5 +153,3 @@ struct AddTransactionView: View {
         totalExpense += newExpense.amount
     }
 }
-
-

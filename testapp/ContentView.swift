@@ -12,11 +12,15 @@ struct ContentView: View {
                 .tabItem {
                     Label("Log", systemImage: "list.bullet")
                 }
-
+            CalculationView()
+                .tabItem {
+                    Label("Calcs", systemImage: "square.and.pencil")
+                }
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gear")
                 }
+            
         }
     }
 }
