@@ -1,25 +1,39 @@
-import Foundation
 import SwiftUI
+import Foundation
 
 struct CalculateReceiptView: View {
-    @State private var parsedItems: [(String, Double)] = [] // [(itemName, price)]
+    @ObservedObject var balanceManager: BalanceManager
     @State private var selectedPerson: [String: String] = [:] // Stores who bought each item
-    @Binding var friends: [Friend]
+    @State private var selectedPayer: String? = nil // Stores the person who paid for the receipt
+    @State var friends: [Friend] = loadFriends() // Load friends directly here
+    var parsedItems: [(String, Double)]
+    var tax: Double
+    var total: Double
 
     var body: some View {
         VStack {
+            // Picker to select who paid for the receipt
+            Picker("Who Paid?", selection: $selectedPayer) {
+                ForEach(friends, id: \.id) { friend in
+                    Text(friend.name).tag(friend.name as String?)
+                }
+            }
+            .pickerStyle(MenuPickerStyle())
+            .frame(width: 200)
+            .padding(.vertical, 8)
+            
             ForEach(parsedItems, id: \.0) { item in
                 HStack {
                     Text("\(item.0): $\(item.1, specifier: "%.2f")")
                     Picker("Who Bought?", selection: personBinding(for: item.0)) {
                         ForEach(friends, id: \.id) { friend in
-                            Text(friend.name).tag(friend.name) // Use friend's name for tagging
+                            Text(friend.name).tag(friend.name)
                         }
                     }
                     .pickerStyle(MenuPickerStyle())
-                    .frame(width: 150) // Set a fixed width for the picker for better layout
+                    .frame(width: 150)
                 }
-                .padding(.vertical, 4) // Add vertical padding for better spacing
+                .padding(.vertical, 4)
             }
 
             Button("Finish") {
@@ -27,52 +41,73 @@ struct CalculateReceiptView: View {
             }
             .padding()
             .buttonStyle(BorderlessButtonStyle())
-            .disabled(!isFormComplete()) // Disable if form is incomplete
+            .disabled(!isFormComplete())
         }
         .onAppear {
-            loadParsedItems()
+            printFriendsList()
         }
     }
 
-    // Function to get a binding for each person selection in the dictionary
+    private func isFormComplete() -> Bool {
+        return parsedItems.allSatisfy { selectedPerson[$0.0] != nil } && selectedPayer != nil
+    }
+
     private func personBinding(for itemName: String) -> Binding<String> {
         Binding(
-            get: { selectedPerson[itemName] ?? friends.first?.name ?? "Unknown" },
-            set: { selectedPerson[itemName] = $0 }
+            get: {
+                selectedPerson[itemName] ?? (friends.first?.name ?? "Unknown")
+            },
+            set: { newValue in
+                selectedPerson[itemName] = newValue
+            }
         )
     }
 
-    // Check if all items have a selected friend
-    private func isFormComplete() -> Bool {
-        return parsedItems.allSatisfy { selectedPerson[$0.0] != nil }
-    }
-
-    // Calculate expenses based on selectedPerson dictionary
     func calculateExpenses() {
         var expensesPerPerson: [String: Double] = [:]
+
+        // Calculate each person's total expenses based on selected items
         for item in parsedItems {
             let person = selectedPerson[item.0] ?? "Unknown"
             expensesPerPerson[person, default: 0.0] += item.1
         }
-        
-        // Logic to update the balances based on expensesPerPerson
+
+        // Update balances excluding the payer's own expenses
         updateBalances(with: expensesPerPerson)
     }
 
-    // Load parsed items (for demonstration)
-    func loadParsedItems() {
-        parsedItems = [("Coffee", 4.50), ("Sandwich", 7.25), ("Salad", 6.00)] // Placeholder data
-    }
-    
-    // Function to update balances
     func updateBalances(with expenses: [String: Double]) {
-        // Your balance update logic here
-        print("Updated balances: \(expenses)")
+        print("Expenses to update: \(expenses)")
+        if let payer = selectedPayer {
+            for (friend, amount) in expenses {
+                if friend != payer { // Only consider friends who are not the payer
+                    // Update how much the non-payer owes the payer
+                    balanceManager.updateBalances(with: [friend: amount], payer: payer)
+                }
+            }
+        }
+    }
+
+    private func printFriendsList() {
+        if friends.isEmpty {
+            print("Friends list is empty.")
+        } else {
+            print("Friends list:")
+            for friend in friends {
+                print("\(friend.name) - ID: \(friend.id)")
+            }
+        }
     }
 }
 
 struct CalculateReceiptView_Previews: PreviewProvider {
     static var previews: some View {
-        return CalculateReceiptView(friends: .constant(loadFriends()))
+        CalculateReceiptView(
+            balanceManager: BalanceManager(),
+            friends: loadFriends(),
+            parsedItems: [("Coffee", 4.50), ("Sandwich", 7.25), ("Salad", 6.00)],
+            tax: 1.0,
+            total: 20.0
+        )
     }
 }

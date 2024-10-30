@@ -24,7 +24,7 @@ struct LogView: View {
                         ForEach(transactions) { transaction in
                             VStack(alignment: .leading) {
                                 Text(transaction.description ?? "No Description")
-                                Text("Paid by: \(transaction.payer ?? "Unknown")") // Handle nil payer case
+                                Text("Paid by: \(transaction.payer)") // Handle nil payer case
                                 Text("Amount: \(String(format: "%.2f", transaction.amount))")
                                 Text("Date: \(transaction.date, formatter: DateFormatter.shortDate)")
                             }

@@ -1,6 +1,8 @@
 import SwiftUI
 
-struct CalculationView: View {
+//This is view to see Balances
+
+struct BalanceView: View {
     @AppStorage("currency") private var selectedCurrency: String = "USD"
     @State private var transactions: [UserExpense] = loadTransactions()
 
