@@ -3,12 +3,15 @@ import Foundation
 
 struct CalculateReceiptView: View {
     @ObservedObject var balanceManager: BalanceManager
+    @Binding var transactions: [UserExpense] // Binding to transactions in LogView
+    @Binding var totalExpense: Double // Update total expense
     @State private var selectedPerson: [String: String] = [:]
     @State private var selectedPayer: String? = nil
     @State var friends: [Friend] = loadFriends()
     var parsedItems: [(String, Double)]
     var tax: Double
     var total: Double
+    
 
     var body: some View {
         VStack {
@@ -22,6 +25,7 @@ struct CalculateReceiptView: View {
             .frame(width: 200)
             .padding(.vertical, 8)
 
+            // Each item with its "Who Bought?" picker
             ForEach(parsedItems, id: \.0) { item in
                 HStack {
                     Text("\(item.0): $\(item.1, specifier: "%.2f")")
@@ -37,7 +41,7 @@ struct CalculateReceiptView: View {
             }
 
             Button("Finish") {
-                calculateExpenses()
+                calculateAndSaveExpenses()
             }
             .padding()
             .buttonStyle(BorderlessButtonStyle())
@@ -63,7 +67,7 @@ struct CalculateReceiptView: View {
         )
     }
 
-    func calculateExpenses() {
+    private func calculateAndSaveExpenses() {
         var expensesPerPerson: [String: Double] = [:]
 
         // Calculate each person's total expenses based on selected items
@@ -72,18 +76,33 @@ struct CalculateReceiptView: View {
             expensesPerPerson[person, default: 0.0] += item.1
         }
 
-        // Update balances excluding the payer's own expenses
-        updateBalances(with: expensesPerPerson)
+        // Save the transaction
+        saveTransaction(expensesPerPerson: expensesPerPerson)
     }
 
-    func updateBalances(with expenses: [String: Double]) {
-        print("Expenses to update: \(expenses)")
-        if let payer = selectedPayer {
-            for (friend, amount) in expenses {
-                if friend != payer {
-                    // Update how much the non-payer owes the payer
-                    balanceManager.updateBalances(with: [friend: amount], payer: payer)
-                }
+    private func saveTransaction(expensesPerPerson: [String: Double]) {
+        guard let payer = selectedPayer else { return }
+
+        // Calculate total amount from receipt items
+        let totalAmount = parsedItems.reduce(0) { $0 + $1.1 }
+        
+        let newExpense = UserExpense(
+            amount: totalAmount,
+            date: Date(),
+            description: "Receipt Transaction",
+            splitDetails: expensesPerPerson,
+            participants: Array(expensesPerPerson.keys),
+            payer: payer
+        )
+        
+        transactions.append(newExpense)
+        saveTransactions(transactions) // Save updated transactions
+        totalExpense += newExpense.amount
+        
+        // Update balances in balance manager
+        for (friend, amount) in expensesPerPerson {
+            if friend != payer {
+                balanceManager.updateBalances(with: [friend: amount], payer: payer)
             }
         }
     }

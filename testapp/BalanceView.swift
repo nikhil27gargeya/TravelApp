@@ -1,4 +1,5 @@
 import SwiftUI
+
 struct BalanceView: View {
     @AppStorage("currency") private var selectedCurrency: String = "USD"
     @ObservedObject var balanceManager: BalanceManager
@@ -24,9 +25,30 @@ struct BalanceView: View {
                     }
                 }
                 .navigationTitle("Balances")
+                .toolbar {
+                    // Add the trash button in the navigation bar
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: clearAllOweStatements) {
+                            Image(systemName: "trash")
+                                .foregroundColor(.red)
+                        }
+                    }
+                }
             }
         }
     }
+
+    // Clear all owe statements from balanceManager and reset balances
+    private func clearAllOweStatements() {
+        balanceManager.owedStatements.removeAll() // Clear all owe statements
+        transactions.removeAll() // Clear all transactions (optional, if needed for testing)
+        saveTransactions(transactions) // Persist the cleared transactions if necessary
+        clearStoredOwedStatements()
+    }
+    
+    private func clearStoredOwedStatements() {
+            UserDefaults.standard.removeObject(forKey: "owedStatements")
+        }
 
     private func getManualOweStatements() -> [String] {
         var statements: [String] = []
