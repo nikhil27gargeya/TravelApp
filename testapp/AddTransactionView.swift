@@ -39,6 +39,12 @@ struct AddTransactionView: View {
                             Text(friend.name).tag(friend as Friend?)
                         }
                     }
+                    .onAppear {
+                        // Set the default to the first friend if available
+                        if selectedFriend == nil {
+                            selectedFriend = friends.first
+                        }
+                    }
                     .pickerStyle(MenuPickerStyle())
                     
                     // Description Field
