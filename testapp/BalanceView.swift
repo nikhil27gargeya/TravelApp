@@ -1,8 +1,9 @@
 import SwiftUI
 struct BalanceView: View {
     @AppStorage("currency") private var selectedCurrency: String = "USD"
-    @ObservedObject var balanceManager: BalanceManager
+    @EnvironmentObject var balanceManager: BalanceManager
     @State private var transactions: [UserExpense] = loadTransactions()
+    
     
     var body: some View {
         NavigationView {
@@ -18,9 +19,9 @@ struct BalanceView: View {
                     } else {
                         List {
                             Section(header: Text("Who Owes Who")) {
-                                ForEach(allOweStatements, id: \.self) { statement in
-                                    Text(statement)
-                                }
+                                ForEach(balanceManager.owedStatements, id: \.self) { statement in
+                                                                    Text("\(statement.debtor) owes \(statement.creditor) \(selectedCurrency) \(String(format: "%.2f", statement.amount))")
+                                                                }
                             }
                         }
                         .listStyle(PlainListStyle())

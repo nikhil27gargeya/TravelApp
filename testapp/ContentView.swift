@@ -10,11 +10,13 @@ struct ContentView: View {
                     Label("Home", systemImage: "house")
                 }
 
-            LogView(balanceManager: balanceManager)
+            LogView()
+                .environmentObject(balanceManager)
                 .tabItem {
                     Label("Log", systemImage: "list.bullet")
                 }
-            BalanceView(balanceManager: balanceManager)
+            BalanceView()
+                .environmentObject(balanceManager)
                 .tabItem {
                     Label("Calcs", systemImage: "square.and.pencil")
                 }

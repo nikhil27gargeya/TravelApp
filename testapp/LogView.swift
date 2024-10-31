@@ -12,10 +12,9 @@ struct LogView: View {
     @AppStorage("currency") private var selectedCurrency: String = "USD"
     @State private var transactions: [UserExpense] = loadTransactions() // Load transactions
     @State private var showAddTransaction = false // State variable for showing the Add Transaction view
-    @State private var showReceiptScanner = false // State variable for showing the Receipt Scanner view
     @State private var totalExpense: Double = 0.0 // Manage totalExpense in LogView
     @State var friends: [Friend] = loadFriends() // Load friends list
-    @ObservedObject var balanceManager: BalanceManager // Add BalanceManager
+    @EnvironmentObject var balanceManager: BalanceManager // Add BalanceManager
 
     var body: some View {
         NavigationView {
@@ -66,14 +65,13 @@ struct LogView: View {
 
     // Delete transaction at specified index
     private func deleteTransaction(at offsets: IndexSet) {
-        // Get the transaction to delete and determine who the payer was
         if let index = offsets.first {
-                transactions.remove(atOffsets: offsets)
-                saveTransactions(transactions) // Save updated transactions
-                
-                // Recalculate balances based on remaining transactions
-                balanceManager.recalculateBalances(from: transactions)
-            }
+            transactions.remove(atOffsets: offsets)
+            saveTransactions(transactions) // Save updated transactions
+            
+            // Recalculate balances based on remaining transactions
+            balanceManager.recalculateBalances(from: transactions)
+        }
     }
 }
 
@@ -91,3 +89,4 @@ func saveTransactions(_ transactions: [UserExpense]) {
         UserDefaults.standard.set(data, forKey: "transactions")
     }
 }
+

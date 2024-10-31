@@ -1,9 +1,16 @@
 import SwiftUI
 import Combine
 
+struct OweStatement: Hashable {
+    let debtor: String
+    let creditor: String
+    var amount: Double
+}
+
+//shared data
 class BalanceManager: ObservableObject {
     @Published var balances: [String: Double] = [:]
-    @Published var owedStatements: [(debtor: String, creditor: String, amount: Double)] = []
+    @Published var owedStatements: [OweStatement] = []
 
     // Update balances based on new expenses for a specific payer
     func updateBalances(with expenses: [String: Double], payer: String) {
@@ -16,31 +23,30 @@ class BalanceManager: ObservableObject {
                 if let index = owedStatements.firstIndex(where: { $0.debtor == friend && $0.creditor == payer }) {
                     owedStatements[index].amount += amount // Update existing statement
                 } else {
-                    owedStatements.append((debtor: friend, creditor: payer, amount: amount)) // Add new statement
+                    owedStatements.append(OweStatement(debtor: friend, creditor: payer, amount: amount)) // Add new statement
                 }
             }
         }
-        print("Balances updated: \(balances)")
-        print("Owed statements updated: \(owedStatements)")
-    }
-
-    // Reset balances and owed statements (useful for initial setup or when all data is cleared)
-    func resetBalances() {
-        balances.removeAll()
-        owedStatements.removeAll()
-        print("Balances and owed statements reset.")
     }
 
     // Recalculate balances based on current transactions
     func recalculateBalances(from transactions: [UserExpense]) {
-        resetBalances() // Start fresh
+        resetBalances() // Clear existing balances before recalculating
         
         for transaction in transactions {
             let splitAmount = transaction.amount / Double(transaction.participants.count)
-            updateBalances(with: [transaction.payer: splitAmount], payer: transaction.payer)
+            // Update balances for each participant in the transaction
+            for friend in transaction.participants {
+                if friend != transaction.payer {
+                    updateBalances(with: [friend: splitAmount], payer: transaction.payer)
+                }
+            }
         }
-        
-        print("Balances recalculated: \(balances)")
-        print("Owed statements recalculated: \(owedStatements)")
+    }
+    
+    // Reset balances and owed statements
+    private func resetBalances() {
+        balances.removeAll()
+        owedStatements.removeAll()
     }
 }
