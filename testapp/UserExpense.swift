@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct UserExpense: Identifiable, Codable {
+public struct UserExpense: Identifiable, Codable, Equatable {
     public var id = UUID()
     var amount: Double
     var date: Date
@@ -15,5 +15,6 @@ public struct UserExpense: Identifiable, Codable {
     var splitDetails: [String: Double]
     var participants: [String]
     var payer: String
+    var isManual: Bool
     
 }

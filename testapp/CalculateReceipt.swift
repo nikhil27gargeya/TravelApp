@@ -2,7 +2,7 @@ import SwiftUI
 import Foundation
 
 struct CalculateReceiptView: View {
-    @ObservedObject var balanceManager: BalanceManager
+    @EnvironmentObject var balanceManager: BalanceManager
     @State private var selectedPayer: String? = nil
     @State private var selectedPeople: [String: [String]] = [:] // Update this to hold multiple selections
     @State var friends: [Friend] = loadFriends()
