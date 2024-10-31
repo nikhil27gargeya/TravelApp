@@ -3,9 +3,9 @@ import Foundation
 
 struct CalculateReceiptView: View {
     @ObservedObject var balanceManager: BalanceManager
-    @State private var selectedPerson: [String: String] = [:] // Stores who bought each item
-    @State private var selectedPayer: String? = nil // Stores the person who paid for the receipt
-    @State var friends: [Friend] = loadFriends() // Load friends directly here
+    @State private var selectedPerson: [String: String] = [:]
+    @State private var selectedPayer: String? = nil
+    @State var friends: [Friend] = loadFriends()
     var parsedItems: [(String, Double)]
     var tax: Double
     var total: Double
@@ -21,7 +21,7 @@ struct CalculateReceiptView: View {
             .pickerStyle(MenuPickerStyle())
             .frame(width: 200)
             .padding(.vertical, 8)
-            
+
             ForEach(parsedItems, id: \.0) { item in
                 HStack {
                     Text("\(item.0): $\(item.1, specifier: "%.2f")")
@@ -80,7 +80,7 @@ struct CalculateReceiptView: View {
         print("Expenses to update: \(expenses)")
         if let payer = selectedPayer {
             for (friend, amount) in expenses {
-                if friend != payer { // Only consider friends who are not the payer
+                if friend != payer {
                     // Update how much the non-payer owes the payer
                     balanceManager.updateBalances(with: [friend: amount], payer: payer)
                 }
@@ -94,20 +94,8 @@ struct CalculateReceiptView: View {
         } else {
             print("Friends list:")
             for friend in friends {
-                print("\(friend.name) - ID: \(friend.id)")
+                print("\(friend.name)")
             }
         }
-    }
-}
-
-struct CalculateReceiptView_Previews: PreviewProvider {
-    static var previews: some View {
-        CalculateReceiptView(
-            balanceManager: BalanceManager(),
-            friends: loadFriends(),
-            parsedItems: [("Coffee", 4.50), ("Sandwich", 7.25), ("Salad", 6.00)],
-            tax: 1.0,
-            total: 20.0
-        )
     }
 }

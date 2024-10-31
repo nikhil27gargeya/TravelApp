@@ -10,7 +10,7 @@ struct ContentView: View {
                     Label("Home", systemImage: "house")
                 }
 
-            LogView()
+            LogView(balanceManager: balanceManager)
                 .tabItem {
                     Label("Log", systemImage: "list.bullet")
                 }

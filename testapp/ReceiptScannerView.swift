@@ -60,20 +60,6 @@ struct ReceiptScannerView: UIViewControllerRepresentable {
                 DispatchQueue.main.async {
                     print("Recognized Text: \(recognizedText)") // Debug print
                     self?.scannedText = recognizedText
-                    
-                    // Parse the recognized text
-//                    if let parsedData = self?.parseReceiptData(from: recognizedText) {
-//                        print("Parsed Items: \(parsedData.items)")  // Debug print for parsed items
-//                        print("Parsed Tax: \(parsedData.tax)")      // Debug print for tax
-//                        print("Parsed Total: \(parsedData.total)")  // Debug print for total
-//
-//                        // Update bindings
-//                        self?.parsedItems = parsedData.items
-//                        self?.tax = parsedData.tax
-//                        self?.total = parsedData.total
-//                    } else {
-//                        print("Parsing failed")
-//                    }
                 }
             }
             request.recognitionLevel = .accurate
@@ -115,7 +101,5 @@ struct ReceiptScannerView: UIViewControllerRepresentable {
             // Return parsed items, tax, and total
             return (items: itemCosts, tax: tax, total: total)
         }
-
-
     }
 }

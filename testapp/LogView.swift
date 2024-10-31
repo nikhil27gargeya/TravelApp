@@ -15,6 +15,7 @@ struct LogView: View {
     @State private var showReceiptScanner = false // State variable for showing the Receipt Scanner view
     @State private var totalExpense: Double = 0.0 // Manage totalExpense in LogView
     @State var friends: [Friend] = loadFriends() // Load friends list
+    @ObservedObject var balanceManager: BalanceManager // Add BalanceManager
 
     var body: some View {
         NavigationView {
@@ -60,14 +61,24 @@ struct LogView: View {
             .sheet(isPresented: $showAddTransaction) {
                 AddTransactionView(totalExpense: $totalExpense, transactions: $transactions, friends: $friends)
             }
-
         }
     }
 
     // Delete transaction at specified index
     private func deleteTransaction(at offsets: IndexSet) {
-        transactions.remove(atOffsets: offsets)
-        saveTransactions(transactions) // Save updated transactions
+        // Get the transaction to delete and determine who the payer was
+        if let index = offsets.first {
+            let transactionToDelete = transactions[index]
+            transactions.remove(atOffsets: offsets)
+            saveTransactions(transactions) // Save updated transactions
+            
+            // Recalculate balances
+            balanceManager.resetBalances() // Reset current balances
+            for transaction in transactions { // Re-calculate balances based on remaining transactions
+                let splitAmount = transaction.amount / Double(transaction.participants.count)
+                balanceManager.updateBalances(with: [transaction.payer: splitAmount], payer: transaction.payer)
+            }
+        }
     }
 }
 
