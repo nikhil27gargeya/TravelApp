@@ -8,24 +8,14 @@ struct BalanceView: View {
         NavigationView {
             ZStack {
                 VStack {
-                    let manualOweStatements = getManualOweStatements()
-                    let receiptOweStatements = getReceiptOweStatements()
-
-                    if receiptOweStatements.isEmpty {
+                    let all = getManualOweStatements() + getReceiptOweStatements()
+                    if all.isEmpty {
                         Text("No outstanding debts.")
                             .foregroundColor(.gray)
                     } else {
                         List {
                             Section(header: Text("Who Owes Who")) {
-                                ForEach(manualOweStatements, id: \.self) { statement in
-                                    Text(statement)
-                                }
-                            }
-                        }
-                        .listStyle(PlainListStyle())
-                        List {
-                            Section(header: Text("Who Owes Who")) {
-                                ForEach(receiptOweStatements, id: \.self) { statement in
+                                ForEach(all, id: \.self) { statement in
                                     Text(statement)
                                 }
                             }

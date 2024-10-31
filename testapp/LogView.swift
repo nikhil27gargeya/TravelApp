@@ -67,20 +67,27 @@ struct LogView: View {
 
     // Delete transaction at specified index
     private func deleteTransaction(at offsets: IndexSet) {
-        // Get the transaction to delete and determine who the payer was
         if let index = offsets.first {
             let transactionToDelete = transactions[index]
             transactions.remove(atOffsets: offsets)
             saveTransactions(transactions) // Save updated transactions
-            
-            // Recalculate balances
-            balanceManager.resetBalances() // Reset current balances
-            for transaction in transactions { // Re-calculate balances based on remaining transactions
-                let splitAmount = transaction.amount / Double(transaction.participants.count)
-                balanceManager.updateBalances(with: [transaction.payer: splitAmount], payer: transaction.payer)
+
+            // Remove only relevant owe statements for this transaction
+            balanceManager.owedStatements.removeAll { statement in
+                statement.creditor == transactionToDelete.payer &&
+                transactionToDelete.splitDetails[statement.debtor] != nil
+            }
+
+            // Adjust balances accordingly without resetting the entire state
+            for (participant, amount) in transactionToDelete.splitDetails {
+                if participant != transactionToDelete.payer {
+                    balanceManager.balances[participant, default: 0.0] -= amount
+                    balanceManager.balances[transactionToDelete.payer, default: 0.0] += amount
+                }
             }
         }
     }
+
 }
 
 // Load and save transactions functions
