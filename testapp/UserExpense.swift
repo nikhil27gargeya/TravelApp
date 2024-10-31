@@ -15,6 +15,5 @@ public struct UserExpense: Identifiable, Codable, Equatable {
     var splitDetails: [String: Double]
     var participants: [String]
     var payer: String
-    var isManual: Bool
     
 }

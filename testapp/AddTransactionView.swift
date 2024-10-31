@@ -15,13 +15,12 @@ struct AddTransactionView: View {
     @State private var parsedItems: [(String, Double)] = []
     @State private var tax: Double = 0.0 // Add tax state variable
     @State private var total: Double = 0.0
-    @EnvironmentObject var balanceManager: BalanceManager
-    
+
     enum SplitType: String, CaseIterable {
         case evenly = "Split Evenly"
         case custom = "Custom Split"
     }
-    
+
     var body: some View {
         NavigationView {
             VStack {
@@ -68,7 +67,7 @@ struct AddTransactionView: View {
                             }
                         }
                     }
-                    
+
                     // Save Button
                     Button("Save") {
                         saveTransaction()
@@ -108,7 +107,7 @@ struct AddTransactionView: View {
             }
         }
     }
-    
+
     private func getFormattedAmount() -> String {
         guard let amountValue = Double(amount) else { return "" }
         let formatter = NumberFormatter()
@@ -116,13 +115,13 @@ struct AddTransactionView: View {
         formatter.currencyCode = selectedCurrency
         return formatter.string(from: NSNumber(value: amountValue)) ?? ""
     }
-    
+
     private func distributeAmountEvenly() {
         guard let total = Double(amount), friends.count > 0 else { return }
         let share = total / Double(friends.count)
         friends = friends.map { Friend(name: $0.name, share: share) }
     }
-    
+
     private func saveTransaction() {
         guard let totalAmount = Double(amount), let paidBy = selectedFriend else { return }
         
@@ -146,13 +145,11 @@ struct AddTransactionView: View {
             description: description.isEmpty ? nil : description,
             splitDetails: splitDetails,
             participants: friends.map { $0.name },
-            payer: paidBy.name, // Use the selected friend's name as the payer
-            isManual: true
+            payer: paidBy.name // Use the selected friend's name as the payer
         )
         
         transactions.append(newExpense)
         saveTransactions(transactions)
-        balanceManager.recalculateBalances(from: transactions) // Recalculate balances after saving
         totalExpense += newExpense.amount
     }
 }

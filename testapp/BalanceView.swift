@@ -1,32 +1,25 @@
 import SwiftUI
 struct BalanceView: View {
     @AppStorage("currency") private var selectedCurrency: String = "USD"
-    @EnvironmentObject var balanceManager: BalanceManager
+    @ObservedObject var balanceManager: BalanceManager
     @State private var transactions: [UserExpense] = loadTransactions()
-    
     
     var body: some View {
         NavigationView {
             ZStack {
                 VStack {
-                    if balanceManager.manualOwedStatements.isEmpty && balanceManager.receiptOwedStatements.isEmpty {
+                    let manualOweStatements = getManualOweStatements()
+                    let receiptOweStatements = getReceiptOweStatements()
+                    let allOweStatements = manualOweStatements + receiptOweStatements
+
+                    if allOweStatements.isEmpty {
                         Text("No outstanding debts.")
                             .foregroundColor(.gray)
                     } else {
                         List {
-                            if !balanceManager.manualOwedStatements.isEmpty {
-                                Section(header: Text("Manual Transactions")) {
-                                    ForEach(balanceManager.manualOwedStatements, id: \.self) { statement in
-                                        Text("\(statement.debtor) owes \(statement.creditor) \(selectedCurrency) \(String(format: "%.2f", statement.amount))")
-                                    }
-                                }
-                            }
-                            
-                            if !balanceManager.receiptOwedStatements.isEmpty {
-                                Section(header: Text("Receipt Transactions")) {
-                                    ForEach(balanceManager.receiptOwedStatements, id: \.self) { statement in
-                                        Text("\(statement.debtor) owes \(statement.creditor) \(selectedCurrency) \(String(format: "%.2f", statement.amount))")
-                                    }
+                            Section(header: Text("Who Owes Who")) {
+                                ForEach(allOweStatements, id: \.self) { statement in
+                                    Text(statement)
                                 }
                             }
                         }
@@ -34,14 +27,38 @@ struct BalanceView: View {
                     }
                 }
                 .navigationTitle("Balances")
-                .onAppear {
-                    // Reset and recalculate balances if necessary
-                    balanceManager.resetBalances()
-                    // Call update methods here as needed based on current transactions
-                }
             }
-            .navigationTitle("Balances")
         }
     }
 
+    private func getManualOweStatements() -> [String] {
+        var statements: [String] = []
+        var totalOwed = [String: [String: Double]]() // Track who owes whom
+
+        for transaction in transactions {
+            let splitAmount = transaction.amount / Double(transaction.participants.count)
+            
+            for friend in transaction.participants {
+                if friend != transaction.payer {
+                    totalOwed[friend, default: [:]][transaction.payer, default: 0] += splitAmount
+                }
+            }
+        }
+
+        for (debtor, owedAmounts) in totalOwed {
+            for (creditor, amount) in owedAmounts {
+                statements.append("\(debtor) owes \(creditor) \(selectedCurrency) \(String(format: "%.2f", amount))")
+            }
+        }
+
+        return statements
+    }
+
+    private func getReceiptOweStatements() -> [String] {
+        var statements: [String] = []
+        for statement in balanceManager.owedStatements {
+            statements.append("\(statement.debtor) owes \(statement.creditor) \(selectedCurrency) \(String(format: "%.2f", statement.amount))")
+        }
+        return statements
+    }
 }

@@ -2,9 +2,9 @@ import SwiftUI
 import Foundation
 
 struct CalculateReceiptView: View {
-    @EnvironmentObject var balanceManager: BalanceManager
+    @ObservedObject var balanceManager: BalanceManager
+    @State private var selectedPerson: [String: String] = [:]
     @State private var selectedPayer: String? = nil
-    @State private var selectedPeople: [String: [String]] = [:] // Update this to hold multiple selections
     @State var friends: [Friend] = loadFriends()
     var parsedItems: [(String, Double)]
     var tax: Double
@@ -25,24 +25,13 @@ struct CalculateReceiptView: View {
             ForEach(parsedItems, id: \.0) { item in
                 HStack {
                     Text("\(item.0): $\(item.1, specifier: "%.2f")")
-                    // List to select multiple people who bought this item
-                    VStack {
+                    Picker("Who Bought?", selection: personBinding(for: item.0)) {
                         ForEach(friends, id: \.id) { friend in
-                            HStack {
-                                // Checkbox for selecting the friend
-                                Button(action: {
-                                    toggleSelection(for: friend.name, itemName: item.0)
-                                }) {
-                                    HStack {
-                                        Image(systemName: selectedPeople[item.0]?.contains(friend.name) ?? false ? "checkmark.square" : "square")
-                                            .foregroundColor(selectedPeople[item.0]?.contains(friend.name) ?? false ? .blue : .gray)
-                                        Text(friend.name)
-                                    }
-                                }
-                                .buttonStyle(PlainButtonStyle()) // To keep it looking like a regular text button
-                            }
+                            Text(friend.name).tag(friend.name)
                         }
                     }
+                    .pickerStyle(MenuPickerStyle())
+                    .frame(width: 150)
                 }
                 .padding(.vertical, 4)
             }
@@ -54,22 +43,24 @@ struct CalculateReceiptView: View {
             .buttonStyle(BorderlessButtonStyle())
             .disabled(!isFormComplete())
         }
+        .onAppear {
+            printFriendsList()
+        }
     }
 
     private func isFormComplete() -> Bool {
-        return selectedPayer != nil && selectedPeople.allSatisfy { !$0.value.isEmpty } // Ensure at least one person is selected for each item
+        return parsedItems.allSatisfy { selectedPerson[$0.0] != nil } && selectedPayer != nil
     }
 
-    private func toggleSelection(for friendName: String, itemName: String) {
-        if selectedPeople[itemName] == nil {
-            selectedPeople[itemName] = []
-        }
-
-        if let index = selectedPeople[itemName]?.firstIndex(of: friendName) {
-            selectedPeople[itemName]?.remove(at: index) // Deselect if already selected
-        } else {
-            selectedPeople[itemName]?.append(friendName) // Select if not already selected
-        }
+    private func personBinding(for itemName: String) -> Binding<String> {
+        Binding(
+            get: {
+                selectedPerson[itemName] ?? (friends.first?.name ?? "Unknown")
+            },
+            set: { newValue in
+                selectedPerson[itemName] = newValue
+            }
+        )
     }
 
     func calculateExpenses() {
@@ -77,13 +68,8 @@ struct CalculateReceiptView: View {
 
         // Calculate each person's total expenses based on selected items
         for item in parsedItems {
-            let amount = item.1
-            if let people = selectedPeople[item.0] {
-                let splitAmount = amount / Double(people.count) // Split among selected people
-                for person in people {
-                    expensesPerPerson[person, default: 0.0] += splitAmount
-                }
-            }
+            let person = selectedPerson[item.0] ?? "Unknown"
+            expensesPerPerson[person, default: 0.0] += item.1
         }
 
         // Update balances excluding the payer's own expenses
@@ -98,6 +84,17 @@ struct CalculateReceiptView: View {
                     // Update how much the non-payer owes the payer
                     balanceManager.updateBalances(with: [friend: amount], payer: payer)
                 }
+            }
+        }
+    }
+
+    private func printFriendsList() {
+        if friends.isEmpty {
+            print("Friends list is empty.")
+        } else {
+            print("Friends list:")
+            for friend in friends {
+                print("\(friend.name)")
             }
         }
     }
