@@ -6,6 +6,7 @@ struct AddTransactionView: View {
     @Binding var friends: [Friend]
     @AppStorage("currency") private var selectedCurrency: String = "USD"
     @Environment(\.presentationMode) var presentationMode
+    @ObservedObject var balanceManager: BalanceManager
     @State private var amount: String = ""
     @State private var description: String = ""
     @State private var splitType: SplitType = .evenly
@@ -157,5 +158,6 @@ struct AddTransactionView: View {
         transactions.append(newExpense)
         saveTransactions(transactions)
         totalExpense += newExpense.amount
+        balanceManager.updateBalances(with: splitDetails, payer: paidBy.name)
     }
 }

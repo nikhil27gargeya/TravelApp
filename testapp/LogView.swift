@@ -60,7 +60,7 @@ struct LogView: View {
             }
             .navigationTitle("Expense Log")
             .sheet(isPresented: $showAddTransaction) {
-                AddTransactionView(totalExpense: $totalExpense, transactions: $transactions, friends: $friends)
+                AddTransactionView(totalExpense: $totalExpense, transactions: $transactions, friends: $friends, balanceManager: balanceManager)
             }
         }
     }

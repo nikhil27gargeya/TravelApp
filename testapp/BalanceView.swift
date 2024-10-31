@@ -10,15 +10,22 @@ struct BalanceView: View {
                 VStack {
                     let manualOweStatements = getManualOweStatements()
                     let receiptOweStatements = getReceiptOweStatements()
-                    let allOweStatements = manualOweStatements + receiptOweStatements
 
-                    if allOweStatements.isEmpty {
+                    if receiptOweStatements.isEmpty {
                         Text("No outstanding debts.")
                             .foregroundColor(.gray)
                     } else {
                         List {
                             Section(header: Text("Who Owes Who")) {
-                                ForEach(allOweStatements, id: \.self) { statement in
+                                ForEach(manualOweStatements, id: \.self) { statement in
+                                    Text(statement)
+                                }
+                            }
+                        }
+                        .listStyle(PlainListStyle())
+                        List {
+                            Section(header: Text("Who Owes Who")) {
+                                ForEach(receiptOweStatements, id: \.self) { statement in
                                     Text(statement)
                                 }
                             }
