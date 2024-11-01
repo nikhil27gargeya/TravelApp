@@ -7,7 +7,7 @@ struct CalculateReceiptView: View {
     @Binding var totalExpense: Double // Update total expense
     @State private var selectedPerson: [String: String] = [:]
     @State private var selectedPayer: String? = nil
-    @State var friends: [Friend] = loadFriends()
+    @Binding var friends: [Friend]
     var parsedItems: [(String, Double)]
     var tax: Double
     var total: Double

@@ -6,6 +6,7 @@ struct HomeView: View {
     @State private var friends: [Friend] = loadFriends()
     @State private var newFriendName: String = ""
     @State private var jokes: String = ""
+    @State private var inputText: String = ""
 
     var body: some View {
         VStack {

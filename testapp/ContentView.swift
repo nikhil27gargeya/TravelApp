@@ -4,6 +4,7 @@ struct ContentView: View {
     @StateObject private var balanceManager = BalanceManager()
     @State private var transactions: [UserExpense] = loadTransactions()
     @State private var totalExpense: Double = 0.0
+    @State private var friends: [Friend] = loadFriends()
     
     var body: some View {
         TabView {
@@ -20,9 +21,9 @@ struct ContentView: View {
                 .tabItem {
                     Label("Calcs", systemImage: "square.and.pencil")
                 }
-            CalculateReceiptView(balanceManager: balanceManager, transactions: $transactions, totalExpense: $totalExpense, parsedItems: [("Coffee", 4.50), ("Sandwich", 7.25), ("Salad", 6.00)], tax: 1.0, total: 20.0)
+            CalculateReceiptView(balanceManager: balanceManager, transactions: $transactions, totalExpense: $totalExpense, friends: $friends, parsedItems: [("Coffee", 4.50), ("Sandwich", 7.25), ("Salad", 6.00)], tax: 1.0, total: 20.0)
                 .tabItem {
-                    Label("Settings", systemImage: "list.bullet")
+                    Label("Testing", systemImage: "list.bullet")
                 }
             SettingsView()
                 .tabItem {
