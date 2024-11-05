@@ -1,72 +1,80 @@
+import Foundation
 import FirebaseFirestore
+import FirebaseFirestoreSwift
 import Combine
 
 class FriendManager: ObservableObject {
     private let db = Firestore.firestore()
-    @Published var friends: [Friend] = [] // Observable list of friends
+    @Published var friends: [Friend] = [] // Published property to update UI when it changes
     private var groupId: String
 
     init(groupId: String) {
         self.groupId = groupId
-        fetchFriends() // Load friends on initialization
+        loadFriends()
     }
 
-    // Function to add a friend to a specific group
-    func addFriend(_ friend: Friend, to groupId: String) {
-        let friendData: [String: Any] = [
-            "id": friend.id.uuidString, // Store UUID as a String
-            "name": friend.name,
-            "share": friend.share,
-            "balance": friend.balance
-        ]
+    // Load friends from user collection based on member IDs from the group document
+    func loadFriends() {
+        // Get the group document and fetch the members array
+        let groupRef = db.collection("groups").document(groupId)
         
-        db.collection("groups").document(groupId).collection("friends").document(friend.id.uuidString).setData(friendData) { error in
+        groupRef.getDocument { document, error in
             if let error = error {
-                print("Error adding friend: \(error)")
-            } else {
-                print("Friend added successfully!")
-                self.fetchFriends() // Reload friends after adding
-            }
-        }
-    }
-
-    // Function to fetch friends for the assigned groupId
-    func fetchFriends() {
-        db.collection("groups").document(groupId).collection("friends").getDocuments { snapshot, error in
-            if let error = error {
-                print("Error fetching friends: \(error)")
+                print("Error fetching group document: \(error.localizedDescription)")
                 return
             }
 
-            var loadedFriends: [Friend] = []
-            for document in snapshot!.documents {
-                if let friend = try? document.data(as: Friend.self) {
-                    loadedFriends.append(friend)
+            guard let document = document, document.exists,
+                  let data = document.data(),
+                  let memberIds = data["members"] as? [String] else {
+                print("No members found in the group document")
+                return
+            }
+
+            self.fetchFriendsDetails(memberIds: memberIds)
+        }
+    }
+
+    // Fetch user details for each member ID from "users" collection
+    private func fetchFriendsDetails(memberIds: [String]) {
+        // Clear the friends list before reloading
+        self.friends = []
+
+        let usersCollection = db.collection("users")
+
+        let dispatchGroup = DispatchGroup() // To manage multiple asynchronous operations
+
+        for memberId in memberIds {
+            dispatchGroup.enter()
+            usersCollection.document(memberId).getDocument { document, error in
+                defer { dispatchGroup.leave() }
+
+                if let error = error {
+                    print("Error fetching user document for memberId \(memberId): \(error.localizedDescription)")
+                    return
+                }
+
+                guard let document = document, document.exists else {
+                    print("No user document found for memberId \(memberId)")
+                    return
+                }
+
+                // Create a Friend instance from the fetched document
+                if let name = document.data()?["name"] as? String {
+                    let friend = Friend(id: UUID(uuidString: memberId) ?? UUID(), name: name, share: 0.0, balance: 0.0)
+                    DispatchQueue.main.async {
+                        self.friends.append(friend)
+                    }
                 }
             }
-            self.friends = loadedFriends // Update the published friends list
         }
-    }
 
-    // Function to update a friend's balance
-    func updateFriendBalance(friendId: String, newBalance: Double) {
-        db.collection("groups").document(groupId).collection("friends").document(friendId).updateData(["balance": newBalance]) { error in
-            if let error = error {
-                print("Error updating balance: \(error)")
+        // Notify when all friends have been loaded
+        dispatchGroup.notify(queue: .main) {
+            if self.friends.isEmpty {
+                print("Friends list is empty after fetching all member details.")
             } else {
-                print("Balance updated successfully!")
-            }
-        }
-    }
-
-    // Function to delete a friend
-    func deleteFriend(friendId: String) {
-        db.collection("groups").document(groupId).collection("friends").document(friendId).delete { error in
-            if let error = error {
-                print("Error deleting friend: \(error)")
-            } else {
-                print("Friend deleted successfully!")
-                self.fetchFriends() // Reload friends after deletion
+                print("Successfully loaded friends: \(self.friends)")
             }
         }
     }

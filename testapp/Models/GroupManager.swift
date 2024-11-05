@@ -68,6 +68,8 @@ class GroupManager: ObservableObject {
                         print("Error creating group: \(error)")
                     } else {
                         print("Group created successfully!")
+                        // After creating the group, add it to the user's groupIds array
+                        self.addGroupToUser(groupId: uniqueCode)
                     }
                 }
             } catch {
@@ -97,7 +99,24 @@ class GroupManager: ObservableObject {
                     print("Error joining group: \(error)")
                 } else {
                     print("Joined group successfully!")
+                    // After joining the group, add it to the user's groupIds array
+                    self.addGroupToUser(groupId: document.documentID)
                 }
+            }
+        }
+    }
+
+    // Add the group ID to the user's groupIds array
+    private func addGroupToUser(groupId: String) {
+        let userRef = db.collection("users").document(userId)
+
+        userRef.updateData([
+            "groupIds": FieldValue.arrayUnion([groupId])
+        ]) { error in
+            if let error = error {
+                print("Error adding group ID to user: \(error)")
+            } else {
+                print("Successfully added group ID to user")
             }
         }
     }

@@ -9,7 +9,7 @@ struct testappApp: App {
     
     var body: some Scene {
         WindowGroup {
-            GroupView(userId: "testUser123")
+            MainView()
         }
     }
 }

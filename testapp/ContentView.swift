@@ -10,8 +10,6 @@ struct ContentView: View {
 
     init(group: Group) {
         self.group = group
-        
-        // Unwrap `group.id` when initializing FriendManager and BalanceManager
         if let groupId = group.id {
             _friendManager = StateObject(wrappedValue: FriendManager(groupId: groupId))
             _balanceManager = StateObject(wrappedValue: BalanceManager(groupId: groupId))
@@ -22,11 +20,10 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            HomeView()
+            HomeView(groupId: group.id ?? "default")
                 .tabItem {
                     Label("Home", systemImage: "house")
                 }
-            
             LogView(balanceManager: balanceManager, transactions: $transactions)
                 .tabItem {
                     Label("Log", systemImage: "list.bullet")
@@ -36,10 +33,14 @@ struct ContentView: View {
                 .tabItem {
                     Label("Balances", systemImage: "chart.bar")
                 }
+            SettingsView()
+                .tabItem {
+                    Label("Settings", systemImage: "gear")
+                }
+            
         }
-        .navigationTitle(group.name)
         .onAppear {
-            loadTransactions() // Load transactions when ContentView appears
+            loadTransactions()
         }
     }
     
