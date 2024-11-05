@@ -1,5 +1,5 @@
-
 import SwiftUI
+import FirebaseFirestore
 
 extension DateFormatter {
     static var shortDate: DateFormatter {
@@ -11,96 +11,111 @@ extension DateFormatter {
 
 struct LogView: View {
     @AppStorage("currency") private var selectedCurrency: String = "USD"
-    @State private var transactions: [UserExpense] = loadTransactions() // Load transactions
-    @State private var showAddTransaction = false // State variable for showing the Add Transaction view
-    @State private var showReceiptScanner = false // State variable for showing the Receipt Scanner view
-    @State private var totalExpense: Double = 0.0 // Manage totalExpense in LogView
-    @State var friends: [Friend] = loadFriends() // Load friends list
-    @ObservedObject var balanceManager: BalanceManager // Add BalanceManager
+    @State private var showAddTransaction = false
+    @State private var totalExpense: Double = 0.0
+    @ObservedObject var balanceManager: BalanceManager
+    @Binding var transactions: [UserExpense]
+    @StateObject private var friendManager = FriendManager(groupId: "groupId123")
 
     var body: some View {
         NavigationView {
             ZStack {
                 VStack {
-                    List {
-                        ForEach(transactions) { transaction in
-                            VStack(alignment: .leading) {
-                                Text(transaction.description ?? "No Description")
-                                Text("Paid by: \(transaction.payer)") // Handle nil payer case
-                                Text("Amount: \(String(format: "%.2f", transaction.amount))")
-                                Text("Date: \(transaction.date, formatter: DateFormatter.shortDate)")
-                            }
-                        }
-                        .onDelete(perform: deleteTransaction)
-                    }
-                    .listStyle(PlainListStyle()) // Use plain list style for a cleaner look
-                    .frame(maxHeight: .infinity) // Allow the list to extend fully
+                    transactionList
                 }
-
-                // Add Transaction Button
-                VStack {
-                    Spacer() // Pushes the button to the bottom
-                    HStack {
-                        Spacer() // Pushes the button to the right
-                        Button(action: {
-                            showAddTransaction.toggle()
-                        }) {
-                            Image(systemName: "plus")
-                                .resizable()
-                                .scaledToFit()
-                                .foregroundColor(.white)
-                                .frame(width: 20, height: 20)
-                                .padding()
-                        }
-                        .background(Color.blue)
-                        .clipShape(Circle())
-                        .padding()
-                    }
-                }
+                addTransactionButton
             }
             .navigationTitle("Expense Log")
             .sheet(isPresented: $showAddTransaction) {
-                AddTransactionView(totalExpense: $totalExpense, transactions: $transactions, friends: $friends, balanceManager: balanceManager)
+                AddTransactionView(
+                    groupId: balanceManager.groupId,
+                    totalExpense: $totalExpense,
+                    transactions: $transactions,
+                    friends: $friendManager.friends,
+                    balanceManager: balanceManager
+                )
+            }
+            .onAppear {
+                loadTransactions()
             }
         }
     }
 
-    // Delete transaction at specified index
-    private func deleteTransaction(at offsets: IndexSet) {
-        if let index = offsets.first {
-            let transactionToDelete = transactions[index]
-            transactions.remove(atOffsets: offsets)
-            saveTransactions(transactions) // Save updated transactions
-
-            // Remove only relevant owe statements for this transaction
-            balanceManager.owedStatements.removeAll { statement in
-                statement.creditor == transactionToDelete.payer &&
-                transactionToDelete.splitDetails[statement.debtor] != nil
-            }
-
-            // Adjust balances accordingly without resetting the entire state
-            for (participant, amount) in transactionToDelete.splitDetails {
-                if participant != transactionToDelete.payer {
-                    balanceManager.balances[participant, default: 0.0] -= amount
-                    balanceManager.balances[transactionToDelete.payer, default: 0.0] += amount
+    // MARK: - Views
+    
+    private var transactionList: some View {
+        List {
+            ForEach(transactions) { transaction in
+                VStack(alignment: .leading) {
+                    Text(transaction.description ?? "No Description")
+                    Text("Paid by: \(transaction.payer)")
+                    Text("Amount: \(String(format: "%.2f", transaction.amount))")
+                    Text("Date: \(transaction.date, formatter: DateFormatter.shortDate)")
                 }
             }
+            .onDelete(perform: deleteTransaction)
+        }
+        .listStyle(PlainListStyle())
+        .frame(maxHeight: .infinity)
+    }
+
+    private var addTransactionButton: some View {
+        VStack {
+            Spacer()
+            HStack {
+                Spacer()
+                Button(action: {
+                    showAddTransaction.toggle()
+                }) {
+                    Image(systemName: "plus")
+                        .resizable()
+                        .scaledToFit()
+                        .foregroundColor(.white)
+                        .frame(width: 20, height: 20)
+                        .padding()
+                }
+                .background(Color.blue)
+                .clipShape(Circle())
+                .padding()
+            }
+        }
+    }
+    
+    // MARK: - Firestore Integration
+
+    private func loadTransactions() {
+        let db = Firestore.firestore()
+        db.collection("groups").document(balanceManager.groupId).collection("transactions").getDocuments { snapshot, error in
+            if let error = error {
+                print("Error fetching transactions: \(error)")
+                return
+            }
+            guard let documents = snapshot?.documents else {
+                print("No transactions found")
+                return
+            }
+            self.transactions = documents.compactMap { document in
+                try? document.data(as: UserExpense.self)
+            }
         }
     }
 
-}
+    private func deleteTransaction(at offsets: IndexSet) {
+        guard let index = offsets.first else { return }
+        
+        let transactionToDelete = transactions[index]
+        transactions.remove(atOffsets: offsets)
 
-// Load and save transactions functions
-func loadTransactions() -> [UserExpense] {
-    if let data = UserDefaults.standard.data(forKey: "transactions"),
-       let savedTransactions = try? JSONDecoder().decode([UserExpense].self, from: data) {
-        return savedTransactions
-    }
-    return []
-}
-
-func saveTransactions(_ transactions: [UserExpense]) {
-    if let data = try? JSONEncoder().encode(transactions) {
-        UserDefaults.standard.set(data, forKey: "transactions")
+        let db = Firestore.firestore()
+        db.collection("groups").document(balanceManager.groupId)
+            .collection("transactions")
+            .document(transactionToDelete.id.uuidString) // Ensure this matches the ID used in saveTransaction
+            .delete { error in
+                if let error = error {
+                    print("Error deleting transaction: \(error)")
+                } else {
+                    print("Transaction deleted successfully!")
+                }
+            }
     }
 }

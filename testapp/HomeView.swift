@@ -1,75 +1,68 @@
 import SwiftUI
+import Firebase
 
 struct HomeView: View {
     @State private var totalExpense: Double = 0.0
     @State private var selectedCurrency: String = UserDefaults.standard.string(forKey: "currency") ?? "USD"
-    @State private var friends: [Friend] = loadFriends()
     @State private var newFriendName: String = ""
-    @State private var jokes: String = ""
-    @State private var inputText: String = ""
+    
+    @StateObject private var friendManager = FriendManager(groupId: "groupId123") // Initialize with the group ID
 
     var body: some View {
-        VStack {
-            // Total Expense Display
-            Text("Total Expenses: \(selectedCurrency) \(totalExpense, specifier: "%.2f")")
-                .font(.largeTitle)
-                .padding()
+        NavigationView {
+            VStack {
+                // Total Expense Display
+                Text("Total Expenses: \(selectedCurrency) \(totalExpense, specifier: "%.2f")")
+                    .font(.largeTitle)
+                    .padding()
 
-            // Friends List
-            VStack(alignment: .leading) {
-                Text("Friends")
-                    .font(.headline)
-                
+                // Friends List
                 List {
-                    ForEach(friends) { friend in
+                    ForEach(friendManager.friends) { friend in
                         Text(friend.name)
                     }
                     .onDelete(perform: deleteFriend)
                 }
-                
-            
+                .navigationTitle("Friends")
+
+                // Add New Friend
                 HStack {
                     TextField("Add Friend", text: $newFriendName)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                    
+                        .padding(.horizontal)
+
                     Button(action: addFriend) {
                         Image(systemName: "plus")
+                            .padding()
                     }
                     .disabled(newFriendName.isEmpty)
                 }
                 .padding()
             }
-            .padding()
-        }
-        .onAppear {
-            selectedCurrency = UserDefaults.standard.string(forKey: "currency") ?? "USD"
         }
     }
     
     private func addFriend() {
         guard !newFriendName.isEmpty else { return } // Check that the name isn't empty
         let newFriend = Friend(name: newFriendName, share: 0) // Provide a share value (default to 0)
-        friends.append(newFriend)
-        newFriendName = ""
-        saveFriends(friends) // Save the updated friends list
+
+        // Add friend to Firestore
+        friendManager.addFriend(newFriend, to: "groupId123") // Replace with your actual group ID
+        
+        newFriendName = "" // Clear input field
     }
 
     private func deleteFriend(at offsets: IndexSet) {
-        friends.remove(atOffsets: offsets)
-        saveFriends(friends)  // Save the updated friends list
+        for index in offsets {
+            let friend = friendManager.friends[index]
+            // Remove friend from Firestore
+            friendManager.deleteFriend(friendId: friend.id.uuidString) // Replace with your actual group ID
+        }
     }
 }
 
-func loadFriends() -> [Friend] {
-    if let data = UserDefaults.standard.data(forKey: "friends"),
-       let savedFriends = try? JSONDecoder().decode([Friend].self, from: data) {
-        return savedFriends
-    }
-    return []
-}
-
-func saveFriends(_ friends: [Friend]) {  // Accept friends as a parameter
-    if let data = try? JSONEncoder().encode(friends) {
-        UserDefaults.standard.set(data, forKey: "friends")
+struct HomeView_Previews: PreviewProvider {
+    static var previews: some View {
+        HomeView()
     }
 }

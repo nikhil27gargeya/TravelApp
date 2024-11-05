@@ -1,17 +1,15 @@
-//
-//  testappApp.swift
-//  testapp
-//
-//  Created by Nikhil Gargeya on 10/28/24.
-//
-
 import SwiftUI
+import Firebase  // Import the Firebase module
 
 @main
 struct testappApp: App {
+    init() {
+        FirebaseApp.configure()
+    }
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            GroupView(userId: "testUser123")
         }
     }
 }

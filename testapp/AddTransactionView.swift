@@ -1,6 +1,9 @@
 import SwiftUI
+import FirebaseFirestore
+import FirebaseFirestoreSwift
 
 struct AddTransactionView: View {
+    let groupId: String // Pass the group ID here for scoping
     @Binding var totalExpense: Double
     @Binding var transactions: [UserExpense]
     @Binding var friends: [Friend]
@@ -11,11 +14,12 @@ struct AddTransactionView: View {
     @State private var description: String = ""
     @State private var splitType: SplitType = .evenly
     @State private var selectedFriend: Friend?
-    @State private var showReceiptScanner = false // State variable for the receipt scanner
-    @State private var scannedText: String = "" // State variable to hold scanned text
+    @State private var showReceiptScanner = false
+    @State private var scannedText: String = ""
     @State private var parsedItems: [(String, Double)] = []
-    @State private var tax: Double = 0.0 // Add tax state variable
+    @State private var tax: Double = 0.0
     @State private var total: Double = 0.0
+    @State private var isLoading: Bool = false
 
     enum SplitType: String, CaseIterable {
         case evenly = "Split Evenly"
@@ -34,6 +38,7 @@ struct AddTransactionView: View {
                                 .padding(.trailing, 8),
                             alignment: .trailing
                         )
+
                     // Friend Selection Picker
                     Picker("Who Paid", selection: $selectedFriend) {
                         ForEach(friends) { friend in
@@ -41,16 +46,15 @@ struct AddTransactionView: View {
                         }
                     }
                     .onAppear {
-                        // Set the default to the first friend if available
                         if selectedFriend == nil {
                             selectedFriend = friends.first
                         }
                     }
                     .pickerStyle(MenuPickerStyle())
-                    
+
                     // Description Field
                     TextField("Description (optional)", text: $description)
-                    
+
                     // Split Type Picker
                     Picker("Split Type", selection: $splitType) {
                         ForEach(SplitType.allCases, id: \.self) { type in
@@ -59,7 +63,7 @@ struct AddTransactionView: View {
                     }
                     .pickerStyle(SegmentedPickerStyle())
                     .padding()
-                    
+
                     // Custom Split Section
                     if splitType == .custom {
                         Section(header: Text("Custom Split")) {
@@ -78,11 +82,14 @@ struct AddTransactionView: View {
                     // Save Button
                     Button("Save") {
                         saveTransaction()
-                        presentationMode.wrappedValue.dismiss()
                     }
+                    .disabled(isLoading)
+                    .overlay(
+                        isLoading ? AnyView(ProgressView()) : AnyView(EmptyView())
+                    )
                 }
                 .navigationTitle("Add Transaction")
-                .onChange(of: amount) { newValue in
+                .onChange(of: amount) { _ in
                     if splitType == .evenly {
                         distributeAmountEvenly()
                     }
@@ -90,7 +97,7 @@ struct AddTransactionView: View {
                 
                 // Scan Receipt Button
                 Button("Scan Receipt") {
-                    showReceiptScanner.toggle() // Toggle the scanner view
+                    showReceiptScanner.toggle()
                 }
                 .foregroundColor(.green)
                 .padding()
@@ -108,7 +115,6 @@ struct AddTransactionView: View {
                     }
                 }
             }
-            // Present the ReceiptScannerView when showReceiptScanner is true
             .sheet(isPresented: $showReceiptScanner) {
                 ReceiptScannerView(scannedText: $scannedText, parsedItems: $parsedItems, tax: $tax, total: $total)
             }
@@ -131,9 +137,9 @@ struct AddTransactionView: View {
 
     private func saveTransaction() {
         guard let totalAmount = Double(amount), let paidBy = selectedFriend else { return }
-        
+
         var splitDetails: [String: Double] = [:]
-        
+
         if splitType == .evenly {
             let share = totalAmount / Double(friends.count)
             for friend in friends {
@@ -144,7 +150,7 @@ struct AddTransactionView: View {
                 splitDetails[friend.name] = friend.share
             }
         }
-        
+
         // Create a new expense, including the payer
         let newExpense = UserExpense(
             amount: totalAmount,
@@ -152,12 +158,28 @@ struct AddTransactionView: View {
             description: description.isEmpty ? nil : description,
             splitDetails: splitDetails,
             participants: friends.map { $0.name },
-            payer: paidBy.name // Use the selected friend's name as the payer
+            payer: paidBy.name
         )
         
-        transactions.append(newExpense)
-        saveTransactions(transactions)
-        totalExpense += newExpense.amount
-        balanceManager.updateBalances(with: splitDetails, payer: paidBy.name)
+        isLoading = true // Start loading
+
+        // Save the new expense to Firestore within the specific group
+        let db = Firestore.firestore()
+        do {
+            let documentId = newExpense.id.uuidString // Set document ID to UUID
+            try db.collection("groups")
+                .document(balanceManager.groupId)
+                .collection("transactions")
+                .document(documentId)
+                .setData(from: newExpense) { error in
+                    if let error = error {
+                        print("Error saving transaction: \(error)")
+                    } else {
+                        print("Transaction saved successfully!")
+                    }
+                }
+        } catch {
+            print("Error encoding transaction: \(error)")
+        }
     }
 }

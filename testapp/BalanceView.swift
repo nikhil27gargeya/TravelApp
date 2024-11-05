@@ -1,40 +1,70 @@
 import SwiftUI
+import FirebaseFirestore
+import FirebaseFirestoreSwift
 
 struct BalanceView: View {
     @AppStorage("currency") private var selectedCurrency: String = "USD"
     @ObservedObject var balanceManager: BalanceManager
-    @State private var transactions: [UserExpense] = loadTransactions()
+    @State private var transactions: [UserExpense] = []
+    @State private var isLoading: Bool = true
     
     var body: some View {
         NavigationView {
             ZStack {
-                VStack {
-                    let all = getManualOweStatements() + getReceiptOweStatements()
-                    if all.isEmpty {
-                        Text("No outstanding debts.")
-                            .foregroundColor(.gray)
-                    } else {
-                        List {
-                            Section(header: Text("Who Owes Who")) {
-                                ForEach(all, id: \.self) { statement in
-                                    Text(statement)
+                if isLoading {
+                    ProgressView("Loading...")
+                } else {
+                    VStack {
+                        let all = getManualOweStatements() + getReceiptOweStatements()
+                        if all.isEmpty {
+                            Text("No outstanding debts.")
+                                .foregroundColor(.gray)
+                        } else {
+                            List {
+                                Section(header: Text("Who Owes Who")) {
+                                    ForEach(all, id: \.self) { statement in
+                                        Text(statement)
+                                    }
                                 }
                             }
+                            .listStyle(PlainListStyle())
                         }
-                        .listStyle(PlainListStyle())
                     }
-                }
-                .navigationTitle("Balances")
-                .toolbar {
-                    // Add the trash button in the navigation bar
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: clearAllOweStatements) {
-                            Image(systemName: "trash")
-                                .foregroundColor(.red)
+                    .navigationTitle("Balances")
+                    .toolbar {
+                        // Add the trash button in the navigation bar
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button(action: clearAllOweStatements) {
+                                Image(systemName: "trash")
+                                    .foregroundColor(.red)
+                            }
                         }
                     }
                 }
             }
+            .onAppear {
+                loadTransactions()
+            }
+        }
+    }
+
+    private func loadTransactions() {
+        let db = Firestore.firestore()
+        db.collection("transactions").getDocuments { snapshot, error in
+            if let error = error {
+                print("Error fetching transactions: \(error)")
+                isLoading = false
+                return
+            }
+            guard let documents = snapshot?.documents else {
+                print("No transactions found")
+                isLoading = false
+                return
+            }
+            self.transactions = documents.compactMap { document in
+                try? document.data(as: UserExpense.self) // Assuming UserExpense conforms to Codable
+            }
+            isLoading = false
         }
     }
 
@@ -42,13 +72,12 @@ struct BalanceView: View {
     private func clearAllOweStatements() {
         balanceManager.owedStatements.removeAll() // Clear all owe statements
         transactions.removeAll() // Clear all transactions (optional, if needed for testing)
-        saveTransactions(transactions) // Persist the cleared transactions if necessary
         clearStoredOwedStatements()
     }
     
     private func clearStoredOwedStatements() {
-            UserDefaults.standard.removeObject(forKey: "owedStatements")
-        }
+        UserDefaults.standard.removeObject(forKey: "owedStatements")
+    }
 
     private func getManualOweStatements() -> [String] {
         var statements: [String] = []
@@ -79,5 +108,11 @@ struct BalanceView: View {
             statements.append("\(statement.debtor) owes \(statement.creditor) \(selectedCurrency) \(String(format: "%.2f", statement.amount))")
         }
         return statements
+    }
+}
+
+struct BalanceView_Previews: PreviewProvider {
+    static var previews: some View {
+        BalanceView(balanceManager: BalanceManager(groupId: "group123"))
     }
 }

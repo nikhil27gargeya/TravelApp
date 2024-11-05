@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import Firebase
 
 struct OweStatement: Codable, Identifiable {
     var id = UUID()
@@ -11,8 +12,11 @@ struct OweStatement: Codable, Identifiable {
 class BalanceManager: ObservableObject {
     @Published var balances: [String: Double] = [:]
     @Published var owedStatements: [OweStatement] = []
+    private var db = Firestore.firestore()
+    public var groupId: String
 
-    init() {
+    init(groupId: String) {
+        self.groupId = groupId
         loadBalances() // Load balances and owed statements on initialization
     }
 
@@ -38,32 +42,55 @@ class BalanceManager: ObservableObject {
         saveBalances() // Save reset state
         print("Balances and owed statements reset.")
     }
-    
-    // MARK: - Persistence Methods
-    
+
+    // MARK: - Firestore Methods
+
     private func saveBalances() {
-        // Encode and save balances
-        if let balancesData = try? JSONEncoder().encode(balances) {
-            UserDefaults.standard.set(balancesData, forKey: "balances")
+        let balancesData = balances.mapValues { $0 } // Convert to [String: Double] if necessary
+
+        // Save balances to Firestore
+        db.collection("balances").document(groupId).setData(["balances": balancesData]) { error in
+            if let error = error {
+                print("Error saving balances: \(error.localizedDescription)")
+            } else {
+                print("Balances saved successfully.")
+            }
         }
-        
+
         // Encode and save owed statements
-        if let statementsData = try? JSONEncoder().encode(owedStatements) {
-            UserDefaults.standard.set(statementsData, forKey: "owedStatements")
+        do {
+            let statementsData = try JSONEncoder().encode(owedStatements)
+            let owedStatementsArray = try JSONDecoder().decode([OweStatement].self, from: statementsData)
+
+            db.collection("balances").document(groupId).updateData(["owedStatements": owedStatementsArray]) { error in
+                if let error = error {
+                    print("Error saving owed statements: \(error.localizedDescription)")
+                } else {
+                    print("Owed statements saved successfully.")
+                }
+            }
+        } catch {
+            print("Error encoding owed statements: \(error)")
         }
     }
-    
+
     private func loadBalances() {
-        // Decode balances
-        if let balancesData = UserDefaults.standard.data(forKey: "balances"),
-           let decodedBalances = try? JSONDecoder().decode([String: Double].self, from: balancesData) {
-            balances = decodedBalances
-        }
-        
-        // Decode owed statements using the OweStatement struct
-        if let statementsData = UserDefaults.standard.data(forKey: "owedStatements"),
-           let decodedStatements = try? JSONDecoder().decode([OweStatement].self, from: statementsData) {
-            owedStatements = decodedStatements
+        db.collection("balances").document(groupId).getDocument { (document, error) in
+            if let document = document, document.exists {
+                if let balancesData = document.data()?["balances"] as? [String: Double] {
+                    self.balances = balancesData
+                }
+                if let owedStatementsData = document.data()?["owedStatements"] as? [[String: Any]] {
+                    self.owedStatements = owedStatementsData.compactMap { dict in
+                        guard let debtor = dict["debtor"] as? String,
+                              let creditor = dict["creditor"] as? String,
+                              let amount = dict["amount"] as? Double else { return nil }
+                        return OweStatement(debtor: debtor, creditor: creditor, amount: amount)
+                    }
+                }
+            } else {
+                print("Document does not exist or error fetching document: \(String(describing: error))")
+            }
         }
     }
 }

@@ -1,13 +1,6 @@
-//
-//  UserExpense.swift
-//  testapp
-//
-//  Created by Nikhil Gargeya on 10/29/24.
-//
+import SwiftUI
 
-import Foundation
-
-public struct UserExpense: Identifiable, Codable, Equatable {
+public struct UserExpense: Identifiable, Codable {
     public var id = UUID()
     var amount: Double
     var date: Date
@@ -15,5 +8,4 @@ public struct UserExpense: Identifiable, Codable, Equatable {
     var splitDetails: [String: Double]
     var participants: [String]
     var payer: String
-    
 }
