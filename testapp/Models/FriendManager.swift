@@ -18,7 +18,9 @@ class FriendManager: ObservableObject {
         // Get the group document and fetch the members array
         let groupRef = db.collection("groups").document(groupId)
         
-        groupRef.getDocument { document, error in
+        groupRef.getDocument { [weak self] document, error in
+            guard let self = self else { return } // Prevent memory leak
+
             if let error = error {
                 print("Error fetching group document: \(error.localizedDescription)")
                 return
@@ -37,15 +39,17 @@ class FriendManager: ObservableObject {
 
     // Fetch user details for each member ID from "users" collection
     private func fetchFriendsDetails(memberIds: [String]) {
-        // Clear the friends list before reloading
-        self.friends = []
-
         let usersCollection = db.collection("users")
 
-        let dispatchGroup = DispatchGroup() // To manage multiple asynchronous operations
+        // Use DispatchGroup to handle multiple async calls
+        let dispatchGroup = DispatchGroup()
+
+        // Temporary array to store fetched friends
+        var fetchedFriends: [Friend] = []
 
         for memberId in memberIds {
             dispatchGroup.enter()
+
             usersCollection.document(memberId).getDocument { document, error in
                 defer { dispatchGroup.leave() }
 
@@ -54,23 +58,24 @@ class FriendManager: ObservableObject {
                     return
                 }
 
-                guard let document = document, document.exists else {
-                    print("No user document found for memberId \(memberId)")
+                guard let document = document, document.exists,
+                      let data = document.data(),
+                      let name = data["name"] as? String else {
+                    print("No user document found or data missing for memberId \(memberId)")
                     return
                 }
 
                 // Create a Friend instance from the fetched document
-                if let name = document.data()?["name"] as? String {
-                    let friend = Friend(id: UUID(uuidString: memberId) ?? UUID(), name: name, share: 0.0, balance: 0.0)
-                    DispatchQueue.main.async {
-                        self.friends.append(friend)
-                    }
-                }
+                let friend = Friend(id: UUID(), name: name, share: 0.0, balance: 0.0)
+                fetchedFriends.append(friend)
             }
         }
 
-        // Notify when all friends have been loaded
+        // Once all data is fetched, update the main `friends` list on the main queue
         dispatchGroup.notify(queue: .main) {
+            self.friends.removeAll() // Clear the friends list before reloading
+            self.friends = fetchedFriends
+
             if self.friends.isEmpty {
                 print("Friends list is empty after fetching all member details.")
             } else {

@@ -9,14 +9,10 @@ struct ContentView: View {
     @State private var totalExpense: Double = 0.0
 
     init(group: Group) {
-        self.group = group
-        if let groupId = group.id {
-            _friendManager = StateObject(wrappedValue: FriendManager(groupId: groupId))
-            _balanceManager = StateObject(wrappedValue: BalanceManager(groupId: groupId))
-        } else {
-            fatalError("Group ID is required")
+            self.group = group
+            _friendManager = StateObject(wrappedValue: FriendManager(groupId: group.id ?? ""))
+            _balanceManager = StateObject(wrappedValue: BalanceManager(groupId: group.id ?? ""))
         }
-    }
 
     var body: some View {
         TabView {
@@ -24,7 +20,7 @@ struct ContentView: View {
                 .tabItem {
                     Label("Home", systemImage: "house")
                 }
-            LogView(balanceManager: balanceManager, transactions: $transactions)
+            LogView(balanceManager: balanceManager, friendManager: friendManager, transactions: $transactions)
                 .tabItem {
                     Label("Log", systemImage: "list.bullet")
                 }

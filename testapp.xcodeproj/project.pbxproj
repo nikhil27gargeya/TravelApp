@@ -11,6 +11,8 @@
 		7D40456A2CD2E0EA00200DFE /* BalanceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4045692CD2E0EA00200DFE /* BalanceManager.swift */; };
 		7D40456C2CD46A7800200DFE /* TestReceiptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D40456B2CD46A7800200DFE /* TestReceiptView.swift */; };
 		7D5450192CDAB5D400D39D37 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D5450182CDAB5D400D39D37 /* SignUpView.swift */; };
+		7D54501B2CDAEB0300D39D37 /* TransactionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D54501A2CDAEB0300D39D37 /* TransactionDetailView.swift */; };
+		7D54501D2CDAEB7300D39D37 /* OweStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D54501C2CDAEB7300D39D37 /* OweStatement.swift */; };
 		7D7861C92CD17EA900A88CE2 /* UserExpense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7861C82CD17EA900A88CE2 /* UserExpense.swift */; };
 		7DE7CB4D2CD9823800057217 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7CB4C2CD9823800057217 /* GoogleService-Info.plist */; };
 		7DE7CB4E2CD9823800057217 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7CB4C2CD9823800057217 /* GoogleService-Info.plist */; };
@@ -73,6 +75,8 @@
 		7D4045692CD2E0EA00200DFE /* BalanceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceManager.swift; sourceTree = "<group>"; };
 		7D40456B2CD46A7800200DFE /* TestReceiptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestReceiptView.swift; sourceTree = "<group>"; };
 		7D5450182CDAB5D400D39D37 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		7D54501A2CDAEB0300D39D37 /* TransactionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailView.swift; sourceTree = "<group>"; };
+		7D54501C2CDAEB7300D39D37 /* OweStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OweStatement.swift; sourceTree = "<group>"; };
 		7D7861C82CD17EA900A88CE2 /* UserExpense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserExpense.swift; sourceTree = "<group>"; };
 		7DE7CB4C2CD9823800057217 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7DE7CB612CD988E100057217 /* FriendManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendManager.swift; sourceTree = "<group>"; };
@@ -143,6 +147,7 @@
 				7DE7CB692CD9B0B800057217 /* Group.swift */,
 				7DE7CB6B2CD9B12A00057217 /* GroupManager.swift */,
 				7DE7CB652CD988ED00057217 /* UserExpenseManager.swift */,
+				7D54501C2CDAEB7300D39D37 /* OweStatement.swift */,
 				7DE7CB612CD988E100057217 /* FriendManager.swift */,
 				7DF97C892CD160B900A3B552 /* Friend.swift */,
 				7D4045692CD2E0EA00200DFE /* BalanceManager.swift */,
@@ -191,6 +196,7 @@
 				7DF97C762CD098C900A3B552 /* HomeView.swift */,
 				7DF97C782CD098CF00A3B552 /* LogView.swift */,
 				7DE81B132CD1ACBE0087B521 /* BalanceView.swift */,
+				7D54501A2CDAEB0300D39D37 /* TransactionDetailView.swift */,
 				7DF97C7C2CD0996900A3B552 /* AddTransactionView.swift */,
 				7DE7CB6D2CD9B18200057217 /* GroupView.swift */,
 				7DE7CB722CD9E33000057217 /* SignInView.swift */,
@@ -381,6 +387,7 @@
 				7DF97C4F2CD0980500A3B552 /* ContentView.swift in Sources */,
 				7DF97C772CD098C900A3B552 /* HomeView.swift in Sources */,
 				7D4045672CD2113900200DFE /* CalculateReceipt.swift in Sources */,
+				7D54501D2CDAEB7300D39D37 /* OweStatement.swift in Sources */,
 				7D7861C92CD17EA900A88CE2 /* UserExpense.swift in Sources */,
 				7DE7CB752CD9E33B00057217 /* MainView.swift in Sources */,
 				7DE7CB662CD988ED00057217 /* UserExpenseManager.swift in Sources */,
@@ -395,6 +402,7 @@
 				7D5450192CDAB5D400D39D37 /* SignUpView.swift in Sources */,
 				7DF97C4D2CD0980500A3B552 /* testappApp.swift in Sources */,
 				7DE81B142CD1ACBE0087B521 /* BalanceView.swift in Sources */,
+				7D54501B2CDAEB0300D39D37 /* TransactionDetailView.swift in Sources */,
 				7DF97C8A2CD160B900A3B552 /* Friend.swift in Sources */,
 				7DE7CB6E2CD9B18200057217 /* GroupView.swift in Sources */,
 				7D40456A2CD2E0EA00200DFE /* BalanceManager.swift in Sources */,

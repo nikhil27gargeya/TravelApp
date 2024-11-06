@@ -14,9 +14,9 @@ struct LogView: View {
     @State private var showAddTransaction = false
     @State private var totalExpense: Double = 0.0
     @ObservedObject var balanceManager: BalanceManager
+    @ObservedObject var friendManager: FriendManager
     @Binding var transactions: [UserExpense]
-    @StateObject private var friendManager = FriendManager(groupId: "groupId123")
-
+    
     var body: some View {
         NavigationView {
             ZStack {

@@ -7,7 +7,7 @@ struct BalanceView: View {
     @ObservedObject var balanceManager: BalanceManager
     @State private var transactions: [UserExpense] = []
     @State private var isLoading: Bool = true
-    
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -15,7 +15,7 @@ struct BalanceView: View {
                     ProgressView("Loading...")
                 } else {
                     VStack {
-                        let all = getManualOweStatements() + getReceiptOweStatements()
+                        let all = getOweStatements()
                         if all.isEmpty {
                             Text("No outstanding debts.")
                                 .foregroundColor(.gray)
@@ -50,7 +50,7 @@ struct BalanceView: View {
 
     private func loadTransactions() {
         let db = Firestore.firestore()
-        db.collection("transactions").getDocuments { snapshot, error in
+        db.collection("groups").document(balanceManager.groupId).collection("transactions").getDocuments { snapshot, error in
             if let error = error {
                 print("Error fetching transactions: \(error)")
                 isLoading = false
@@ -74,41 +74,63 @@ struct BalanceView: View {
         transactions.removeAll() // Clear all transactions (optional, if needed for testing)
         clearStoredOwedStatements()
     }
-    
+
     private func clearStoredOwedStatements() {
         UserDefaults.standard.removeObject(forKey: "owedStatements")
     }
 
-    private func getManualOweStatements() -> [String] {
-        var statements: [String] = []
-        var totalOwed = [String: [String: Double]]() // Track who owes whom
+    // Calculate owe statements using splitDetails from transactions
+    private func getOweStatements() -> [String] {
+        var netOwed: [String: [String: Double]] = [:]
 
+        // Calculate the owed amounts using splitDetails from each transaction
         for transaction in transactions {
-            let splitAmount = transaction.amount / Double(transaction.participants.count)
-            
-            for friend in transaction.participants {
-                if friend != transaction.payer {
-                    totalOwed[friend, default: [:]][transaction.payer, default: 0] += splitAmount
+            for (debtor, amount) in transaction.splitDetails {
+                if debtor != transaction.payer {
+                    // Add the debt to netOwed
+                    netOwed[debtor, default: [:]][transaction.payer, default: 0.0] += amount
                 }
             }
         }
 
-        for (debtor, owedAmounts) in totalOwed {
-            for (creditor, amount) in owedAmounts {
-                statements.append("\(debtor) owes \(creditor) \(selectedCurrency) \(String(format: "%.2f", amount))")
+        // Add owed statements from the balance manager (if any)
+        for statement in balanceManager.owedStatements {
+            netOwed[statement.debtor, default: [:]][statement.creditor, default: 0.0] += statement.amount
+        }
+
+        // Calculate net debts between participants
+        var finalStatements: [String] = []
+
+        // Iterate over all debtors in netOwed
+        for (debtor, creditors) in netOwed {
+            for (creditor, amountOwedByDebtor) in creditors {
+                // Check if the creditor owes anything to the debtor
+                let amountOwedByCreditor = netOwed[creditor]?[debtor] ?? 0.0
+
+                if amountOwedByCreditor > 0 {
+                    // If there is mutual debt, net it out
+                    let netAmount = amountOwedByDebtor - amountOwedByCreditor
+
+                    if netAmount > 0 {
+                        // Debtor owes more to Creditor
+                        finalStatements.append("\(debtor) owes \(creditor) \(selectedCurrency) \(String(format: "%.2f", netAmount))")
+                    } else if netAmount < 0 {
+                        // Creditor owes more to Debtor
+                        finalStatements.append("\(creditor) owes \(debtor) \(selectedCurrency) \(String(format: "%.2f", abs(netAmount)))")
+                    }
+
+                    // Remove the netted amount for the reverse case to avoid duplicate entries
+                    netOwed[creditor]?[debtor] = 0.0
+                } else {
+                    // If there's no mutual debt, add the statement directly
+                    finalStatements.append("\(debtor) owes \(creditor) \(selectedCurrency) \(String(format: "%.2f", amountOwedByDebtor))")
+                }
             }
         }
 
-        return statements
+        return finalStatements
     }
 
-    private func getReceiptOweStatements() -> [String] {
-        var statements: [String] = []
-        for statement in balanceManager.owedStatements {
-            statements.append("\(statement.debtor) owes \(statement.creditor) \(selectedCurrency) \(String(format: "%.2f", statement.amount))")
-        }
-        return statements
-    }
 }
 
 struct BalanceView_Previews: PreviewProvider {
