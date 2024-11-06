@@ -23,7 +23,9 @@ struct BalanceView: View {
                             List {
                                 Section(header: Text("Who Owes Who")) {
                                     ForEach(all, id: \.self) { statement in
-                                        Text(statement)
+                                        NavigationLink(destination: TransactionDetailView(statement: statement, transactions: transactions)) {
+                                            Text(statement.description)
+                                        }
                                     }
                                 }
                             }
@@ -32,7 +34,6 @@ struct BalanceView: View {
                     }
                     .navigationTitle("Balances")
                     .toolbar {
-                        // Add the trash button in the navigation bar
                         ToolbarItem(placement: .navigationBarTrailing) {
                             Button(action: clearAllOweStatements) {
                                 Image(systemName: "trash")
@@ -62,16 +63,15 @@ struct BalanceView: View {
                 return
             }
             self.transactions = documents.compactMap { document in
-                try? document.data(as: UserExpense.self) // Assuming UserExpense conforms to Codable
+                try? document.data(as: UserExpense.self)
             }
             isLoading = false
         }
     }
 
-    // Clear all owe statements from balanceManager and reset balances
     private func clearAllOweStatements() {
-        balanceManager.owedStatements.removeAll() // Clear all owe statements
-        transactions.removeAll() // Clear all transactions (optional, if needed for testing)
+        balanceManager.owedStatements.removeAll()
+        transactions.removeAll()
         clearStoredOwedStatements()
     }
 
@@ -79,8 +79,7 @@ struct BalanceView: View {
         UserDefaults.standard.removeObject(forKey: "owedStatements")
     }
 
-    // Calculate owe statements using splitDetails from transactions
-    private func getOweStatements() -> [String] {
+    private func getOweStatements() -> [OweStatement] {
         var netOwed: [String: [String: Double]] = [:]
 
         // Calculate the owed amounts using splitDetails from each transaction
@@ -99,7 +98,7 @@ struct BalanceView: View {
         }
 
         // Calculate net debts between participants
-        var finalStatements: [String] = []
+        var finalStatementsSet: Set<OweStatement> = []
 
         // Iterate over all debtors in netOwed
         for (debtor, creditors) in netOwed {
@@ -110,31 +109,28 @@ struct BalanceView: View {
                 if amountOwedByCreditor > 0 {
                     // If there is mutual debt, net it out
                     let netAmount = amountOwedByDebtor - amountOwedByCreditor
-
+                    
                     if netAmount > 0 {
                         // Debtor owes more to Creditor
-                        finalStatements.append("\(debtor) owes \(creditor) \(selectedCurrency) \(String(format: "%.2f", netAmount))")
+                        let oweStatement = OweStatement(debtor: debtor, creditor: creditor, amount: netAmount)
+                        finalStatementsSet.insert(oweStatement)
                     } else if netAmount < 0 {
                         // Creditor owes more to Debtor
-                        finalStatements.append("\(creditor) owes \(debtor) \(selectedCurrency) \(String(format: "%.2f", abs(netAmount)))")
+                        let oweStatement = OweStatement(debtor: creditor, creditor: debtor, amount: abs(netAmount))
+                        finalStatementsSet.insert(oweStatement)
                     }
-
+                    
                     // Remove the netted amount for the reverse case to avoid duplicate entries
-                    netOwed[creditor]?[debtor] = 0.0
-                } else {
+                        netOwed[creditor]?[debtor] = 0.0
+                    } else if amountOwedByDebtor > 0 {
                     // If there's no mutual debt, add the statement directly
-                    finalStatements.append("\(debtor) owes \(creditor) \(selectedCurrency) \(String(format: "%.2f", amountOwedByDebtor))")
+                        let oweStatement = OweStatement(debtor: debtor, creditor: creditor, amount: amountOwedByDebtor)
+                        finalStatementsSet.insert(oweStatement)
+                    }
                 }
             }
-        }
 
-        return finalStatements
-    }
-
-}
-
-struct BalanceView_Previews: PreviewProvider {
-    static var previews: some View {
-        BalanceView(balanceManager: BalanceManager(groupId: "group123"))
+        // Convert the set to an array and return
+        return Array(finalStatementsSet)
     }
 }

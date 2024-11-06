@@ -7,7 +7,6 @@ struct ContentView: View {
     @StateObject private var balanceManager: BalanceManager
     @State private var transactions: [UserExpense] = []
     @State private var totalExpense: Double = 0.0
-
     init(group: Group) {
             self.group = group
             _friendManager = StateObject(wrappedValue: FriendManager(groupId: group.id ?? ""))
@@ -29,6 +28,18 @@ struct ContentView: View {
                 .tabItem {
                     Label("Balances", systemImage: "chart.bar")
                 }
+            CalculateReceiptView(
+                            balanceManager: balanceManager,
+                            transactions: $transactions,
+                            totalExpense: $totalExpense,
+                            friends: $friendManager.friends,
+                            parsedItems: [("Coffee", 4.50), ("Sandwich", 7.25), ("Salad", 6.00)],
+                            tax: 1.0,
+                            total: 20.0
+                        )
+            .tabItem {
+                Label("Balances", systemImage: "gear")
+            }
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gear")

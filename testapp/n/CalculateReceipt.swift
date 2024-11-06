@@ -1,41 +1,6 @@
 import SwiftUI
-import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
-
-public func parseReceiptData(from text: String) -> (items: [(String, Double)], tax: Double, total: Double) {
-    var itemCosts: [(String, Double)] = []
-    var tax: Double = 0.0
-    var total: Double = 0.0
-    let lines = text.components(separatedBy: .newlines)
-    var capturingItems = false
-
-    for line in lines {
-        let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        if trimmedLine.lowercased().contains("ordered:") {
-            capturingItems = true
-            continue
-        }
-        if capturingItems, let priceMatch = trimmedLine.range(of: #"\$(\d+(\.\d{1,2})?)"#, options: .regularExpression) {
-            let priceString = String(trimmedLine[priceMatch]).replacingOccurrences(of: "$", with: "")
-            if let price = Double(priceString) {
-                let itemName = trimmedLine.replacingOccurrences(of: "$\(priceString)", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
-                itemCosts.append((itemName, price))
-            }
-        } else if trimmedLine.lowercased().contains("tax") {
-            if let taxMatch = trimmedLine.range(of: #"\$(\d+(\.\d{1,2})?)"#, options: .regularExpression) {
-                tax = Double(trimmedLine[taxMatch].replacingOccurrences(of: "$", with: "")) ?? 0.0
-            }
-        } else if trimmedLine.lowercased().contains("total") {
-            if let totalMatch = trimmedLine.range(of: #"\$(\d+(\.\d{1,2})?)"#, options: .regularExpression) {
-                total = Double(trimmedLine[totalMatch].replacingOccurrences(of: "$", with: "")) ?? 0.0
-            }
-        }
-    }
-
-    return (items: itemCosts, tax: tax, total: total)
-}
 
 struct CalculateReceiptView: View {
     @ObservedObject var balanceManager: BalanceManager
@@ -51,6 +16,7 @@ struct CalculateReceiptView: View {
 
     var body: some View {
         VStack {
+            // Payer Picker
             Picker("Who Paid?", selection: $selectedPayer) {
                 ForEach(friends, id: \.id) { friend in
                     Text(friend.name).tag(friend.name as String?)
@@ -60,6 +26,7 @@ struct CalculateReceiptView: View {
             .frame(width: 200)
             .padding(.vertical, 8)
 
+            // Items Picker for each parsed item
             ForEach(parsedItems, id: \.0) { item in
                 HStack {
                     Text("\(item.0): $\(item.1, specifier: "%.2f")")
@@ -74,6 +41,7 @@ struct CalculateReceiptView: View {
                 .padding(.vertical, 4)
             }
 
+            // Finish Button
             Button("Finish") {
                 calculateAndSaveExpenses()
             }
@@ -86,10 +54,12 @@ struct CalculateReceiptView: View {
         }
     }
 
+    // Check if the form is complete
     private func isFormComplete() -> Bool {
         return parsedItems.allSatisfy { selectedPerson[$0.0] != nil } && selectedPayer != nil
     }
 
+    // Binding to set/get the selected person for each item
     private func personBinding(for itemName: String) -> Binding<String> {
         Binding(
             get: { selectedPerson[itemName] ?? friends.first?.name ?? "Unknown" },
@@ -97,20 +67,44 @@ struct CalculateReceiptView: View {
         )
     }
 
+    // Calculate and save expenses
     private func calculateAndSaveExpenses() {
+        guard let payer = selectedPayer else {
+            print("Error: No payer selected.")
+            return
+        }
+
         var expensesPerPerson: [String: Double] = [:]
 
+        // Calculate individual expenses
         for item in parsedItems {
             let person = selectedPerson[item.0] ?? "Unknown"
             expensesPerPerson[person, default: 0.0] += item.1
         }
 
-        saveTransaction(expensesPerPerson: expensesPerPerson)
+        // Add tax proportionally to all participants
+        if tax > 0 {
+            let taxPerPerson = tax / Double(expensesPerPerson.keys.count)
+            for person in expensesPerPerson.keys {
+                expensesPerPerson[person, default: 0.0] += taxPerPerson
+            }
+        }
+
+        // Call function to save the transaction
+        saveTransaction(expensesPerPerson: expensesPerPerson, payer: payer)
     }
 
-    private func saveTransaction(expensesPerPerson: [String: Double]) {
-        guard let payer = selectedPayer else { return }
-        let totalAmount = parsedItems.reduce(0) { $0 + $1.1 }
+    // Save transaction to Firestore
+    private func saveTransaction(expensesPerPerson: [String: Double], payer: String) {
+        let groupId = balanceManager.groupId
+        
+        // Ensure the groupId is valid
+        guard !groupId.isEmpty else {
+            print("Error: Group ID is empty.")
+            return
+        }
+        
+        let totalAmount = parsedItems.reduce(0) { $0 + $1.1 } + tax
         let newExpense = UserExpense(
             amount: totalAmount,
             date: Date(),
@@ -121,26 +115,31 @@ struct CalculateReceiptView: View {
         )
         
         isSaving = true
-
+        
         let db = Firestore.firestore()
         do {
-            let _ = try db.collection("transactions").addDocument(from: newExpense) { error in
+            let _ = try db.collection("groups").document(groupId).collection("transactions").addDocument(from: newExpense) { error in
                 if let error = error {
-                    print("Error saving transaction to Firebase: \(error)")
+                    print("Error saving transaction to Firebase: \(error.localizedDescription)")
                     isSaving = false
                 } else {
                     transactions.append(newExpense)
                     totalExpense += newExpense.amount
-                    balanceManager.updateBalances(with: expensesPerPerson, payer: payer)
+                    DispatchQueue.main.async {
+                        balanceManager.updateBalances(with: expensesPerPerson, payer: payer)
+                    }
                     isSaving = false
+                    print("Transaction saved successfully!")
                 }
             }
         } catch {
-            print("Error encoding transaction: \(error)")
+            print("Error encoding transaction: \(error.localizedDescription)")
             isSaving = false
         }
     }
 
+
+    // Debugging function to check friends list
     private func printFriendsList() {
         if friends.isEmpty {
             print("Friends list is empty.")

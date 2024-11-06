@@ -51,12 +51,7 @@ struct TestReceiptView: View {
                 $9.48
                 $116.48
                 """
-                
-                let result = parseReceiptData(from: receiptText)
-                items = result.items
-                tax = result.tax
-                total = result.total
-                
+
                 print("Parsed Items: \(items)")
                 print("Tax: \(tax)")
                 print("Total: \(total)")

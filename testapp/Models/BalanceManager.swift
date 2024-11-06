@@ -2,13 +2,6 @@ import SwiftUI
 import Combine
 import Firebase
 
-struct OweStatement: Codable, Identifiable {
-    var id = UUID()
-    let debtor: String
-    let creditor: String
-    var amount: Double
-}
-
 class BalanceManager: ObservableObject {
     @Published var balances: [String: Double] = [:]
     @Published var owedStatements: [OweStatement] = []
@@ -21,20 +14,35 @@ class BalanceManager: ObservableObject {
     }
 
     func updateBalances(with expenses: [String: Double], payer: String) {
-        for (friend, amount) in expenses {
-            if friend != payer {
-                // Update balances
-                balances[friend, default: 0.0] += amount
-                balances[payer, default: 0.0] -= amount
+        DispatchQueue.main.async {
+            for (friend, amount) in expenses {
+                guard amount != 0 else { continue }
                 
-                // Add owed statement
-                owedStatements.append(OweStatement(debtor: friend, creditor: payer, amount: amount))
+                if friend != payer {
+                    // Safely update balances
+                    self.balances[friend, default: 0.0] += amount
+                    self.balances[payer, default: 0.0] -= amount
+                    
+                    // Avoid duplicate owed statements
+                    if let existingIndex = self.owedStatements.firstIndex(where: {
+                        $0.debtor == friend && $0.creditor == payer
+                    }) {
+                        // Update existing statement amount
+                        self.owedStatements[existingIndex].amount += amount
+                    } else {
+                        // Add new owed statement
+                        self.owedStatements.append(OweStatement(debtor: friend, creditor: payer, amount: amount))
+                    }
+                }
             }
+
+            // Save balances after updating
+            self.saveBalances()
+            print("Balances updated: \(self.balances)")
+            print("Owed statements updated: \(self.owedStatements)")
         }
-        saveBalances() // Save after updating
-        print("Balances updated: \(balances)")
-        print("Owed statements updated: \(owedStatements)")
     }
+
 
     func resetBalances() {
         balances.removeAll()
