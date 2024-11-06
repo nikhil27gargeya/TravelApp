@@ -54,7 +54,8 @@ class BalanceManager: ObservableObject {
     // MARK: - Firestore Methods
 
     private func saveBalances() {
-        let balancesData = balances.mapValues { $0 } // Convert to [String: Double] if necessary
+        // Convert balances dictionary to a valid format for Firestore
+        let balancesData = balances.mapValues { $0 } // Ensure it's [String: Double]
 
         // Save balances to Firestore
         db.collection("balances").document(groupId).setData(["balances": balancesData]) { error in
@@ -65,12 +66,10 @@ class BalanceManager: ObservableObject {
             }
         }
 
-        // Encode and save owed statements
+        // Save owed statements directly if it's Codable and Firestore supports it
         do {
-            let statementsData = try JSONEncoder().encode(owedStatements)
-            let owedStatementsArray = try JSONDecoder().decode([OweStatement].self, from: statementsData)
-
-            db.collection("balances").document(groupId).updateData(["owedStatements": owedStatementsArray]) { error in
+            let statementsData = try owedStatements.map { try Firestore.Encoder().encode($0) } // Use Firestore encoder to encode each OweStatement
+            db.collection("balances").document(groupId).updateData(["owedStatements": statementsData]) { error in
                 if let error = error {
                     print("Error saving owed statements: \(error.localizedDescription)")
                 } else {
@@ -81,6 +80,7 @@ class BalanceManager: ObservableObject {
             print("Error encoding owed statements: \(error)")
         }
     }
+
 
     private func loadBalances() {
         db.collection("balances").document(groupId).getDocument { (document, error) in

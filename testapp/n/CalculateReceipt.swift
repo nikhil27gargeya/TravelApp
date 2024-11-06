@@ -125,9 +125,7 @@ struct CalculateReceiptView: View {
                 } else {
                     transactions.append(newExpense)
                     totalExpense += newExpense.amount
-                    DispatchQueue.main.async {
-                        balanceManager.updateBalances(with: expensesPerPerson, payer: payer)
-                    }
+                    balanceManager.updateBalances(with: expensesPerPerson, payer: payer)
                     isSaving = false
                     print("Transaction saved successfully!")
                 }
