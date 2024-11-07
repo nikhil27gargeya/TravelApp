@@ -102,20 +102,42 @@ struct LogView: View {
 
     private func deleteTransaction(at offsets: IndexSet) {
         guard let index = offsets.first else { return }
-        
+
         let transactionToDelete = transactions[index]
+
+        // Print the transaction ID for debugging purposes
+        print("Attempting to delete transaction with ID: \(transactionToDelete.id)")
+
+        // Remove the transaction from the local list first
         transactions.remove(atOffsets: offsets)
 
         let db = Firestore.firestore()
-        db.collection("groups").document(balanceManager.groupId)
-            .collection("transactions")
-            .document(transactionToDelete.id.uuidString) // Ensure this matches the ID used in saveTransaction
-            .delete { error in
+        let groupId = balanceManager.groupId
+
+        // Query Firestore to find the document with the matching transaction ID
+        db.collection("groups").document(groupId).collection("transactions")
+            .whereField("id", isEqualTo: transactionToDelete.id.uuidString)
+            .getDocuments { snapshot, error in
                 if let error = error {
-                    print("Error deleting transaction: \(error)")
-                } else {
-                    print("Transaction deleted successfully!")
+                    print("Error finding transaction: \(error)")
+                    return
+                }
+
+                guard let documents = snapshot?.documents, let document = documents.first else {
+                    print("Transaction not found for deletion.")
+                    return
+                }
+
+                // Now delete the document that was found
+                document.reference.delete { error in
+                    if let error = error {
+                        print("Error deleting transaction: \(error)")
+                    } else {
+                        print("Transaction deleted successfully!")
+                    }
                 }
             }
     }
+
+
 }
