@@ -35,7 +35,6 @@ struct ContentView: View {
                     .tabItem {
                         Label("Balances", systemImage: "chart.bar")
                     }
-                
                 SettingsView()
                     .tabItem {
                         Label("Settings", systemImage: "gear")
