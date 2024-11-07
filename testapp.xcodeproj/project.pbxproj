@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7D211FED2CDC377600783074 /* ReceiptParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D211FEC2CDC377600783074 /* ReceiptParser.swift */; };
 		7D4045672CD2113900200DFE /* CalculateReceipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4045662CD2113900200DFE /* CalculateReceipt.swift */; };
 		7D40456A2CD2E0EA00200DFE /* BalanceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4045692CD2E0EA00200DFE /* BalanceManager.swift */; };
 		7D40456C2CD46A7800200DFE /* TestReceiptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D40456B2CD46A7800200DFE /* TestReceiptView.swift */; };
@@ -71,6 +72,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7D211FEC2CDC377600783074 /* ReceiptParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptParser.swift; sourceTree = "<group>"; };
 		7D4045662CD2113900200DFE /* CalculateReceipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateReceipt.swift; sourceTree = "<group>"; };
 		7D4045692CD2E0EA00200DFE /* BalanceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceManager.swift; sourceTree = "<group>"; };
 		7D40456B2CD46A7800200DFE /* TestReceiptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestReceiptView.swift; sourceTree = "<group>"; };
@@ -159,6 +161,7 @@
 			isa = PBXGroup;
 			children = (
 				7DF97C802CD09AEC00A3B552 /* ReceiptScannerView.swift */,
+				7D211FEC2CDC377600783074 /* ReceiptParser.swift */,
 				7D40456B2CD46A7800200DFE /* TestReceiptView.swift */,
 				7D4045662CD2113900200DFE /* CalculateReceipt.swift */,
 				7DE81B152CD1C4540087B521 /* TextRecognizer.swift */,
@@ -397,6 +400,7 @@
 				7DF97C812CD09AEC00A3B552 /* ReceiptScannerView.swift in Sources */,
 				7DE7CB6C2CD9B12A00057217 /* GroupManager.swift in Sources */,
 				7DF97C7D2CD0996900A3B552 /* AddTransactionView.swift in Sources */,
+				7D211FED2CDC377600783074 /* ReceiptParser.swift in Sources */,
 				7DE7CB622CD988E100057217 /* FriendManager.swift in Sources */,
 				7DE7CB732CD9E33000057217 /* SignInView.swift in Sources */,
 				7D5450192CDAB5D400D39D37 /* SignUpView.swift in Sources */,

@@ -17,8 +17,8 @@ struct AddTransactionView: View {
     @State private var showReceiptScanner = false
     @State private var scannedText: String = ""
     @State private var parsedItems: [(String, Double)] = []
-    @State private var tax: Double = 0.0
-    @State private var total: Double = 0.0
+    @State private var tax: Double? = 0.0
+    @State private var total: Double? = 0.0
     @State private var isLoading: Bool = false
 
     enum SplitType: String, CaseIterable {
@@ -116,7 +116,20 @@ struct AddTransactionView: View {
                 }
             }
             .sheet(isPresented: $showReceiptScanner) {
-                ReceiptScannerView(scannedText: $scannedText, parsedItems: $parsedItems, tax: $tax, total: $total)
+                ReceiptScannerView(
+                    scannedText: $scannedText,
+                    itemCosts: $parsedItems,
+                    totalAmount: $total,
+                    taxAmount: $tax
+                )
+                .onDisappear {
+                    // After the sheet is dismissed, update the amount and description fields
+                    if let firstItem = parsedItems.first, let totalValue = total {
+                        amount = String(format: "%.2f", totalValue)
+                        description = "Receipt Transaction"
+                        distributeAmountEvenly()
+                    }
+                }
             }
         }
     }
@@ -168,7 +181,7 @@ struct AddTransactionView: View {
         do {
             let documentId = newExpense.id.uuidString // Set document ID to UUID
             try db.collection("groups")
-                .document(balanceManager.groupId)
+                .document(groupId)
                 .collection("transactions")
                 .document(documentId)
                 .setData(from: newExpense) { error in
@@ -176,10 +189,18 @@ struct AddTransactionView: View {
                         print("Error saving transaction: \(error)")
                     } else {
                         print("Transaction saved successfully!")
+                        transactions.append(newExpense)
+                        totalExpense += totalAmount
+                        DispatchQueue.main.async {
+                            balanceManager.updateBalances(with: splitDetails, payer: paidBy.name)
+                        }
                     }
+                    isLoading = false // End loading
+                    presentationMode.wrappedValue.dismiss()
                 }
         } catch {
             print("Error encoding transaction: \(error)")
+            isLoading = false
         }
     }
 }

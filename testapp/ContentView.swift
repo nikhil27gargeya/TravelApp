@@ -7,50 +7,84 @@ struct ContentView: View {
     @StateObject private var balanceManager: BalanceManager
     @State private var transactions: [UserExpense] = []
     @State private var totalExpense: Double = 0.0
+    @State private var scannedReceiptText: String = ""
+    @State private var itemCosts: [(String, Double)] = []
+    @State private var totalAmount: Double?
+    @State private var taxAmount: Double?
+    @State private var isShowingReceiptScanner = false
+
     init(group: Group) {
-            self.group = group
-            _friendManager = StateObject(wrappedValue: FriendManager(groupId: group.id ?? ""))
-            _balanceManager = StateObject(wrappedValue: BalanceManager(groupId: group.id ?? ""))
-        }
+        self.group = group
+        _friendManager = StateObject(wrappedValue: FriendManager(groupId: group.id ?? ""))
+        _balanceManager = StateObject(wrappedValue: BalanceManager(groupId: group.id ?? ""))
+    }
 
     var body: some View {
-        TabView {
-            HomeView(groupId: group.id ?? "default")
+        VStack {
+            TabView {
+                HomeView(groupId: group.id ?? "default")
+                    .tabItem {
+                        Label("Home", systemImage: "house")
+                    }
+                LogView(balanceManager: balanceManager, friendManager: friendManager, transactions: $transactions)
+                    .tabItem {
+                        Label("Log", systemImage: "list.bullet")
+                    }
+                
+                BalanceView(balanceManager: balanceManager)
+                    .tabItem {
+                        Label("Balances", systemImage: "chart.bar")
+                    }
+                CalculateReceiptView(
+                    balanceManager: balanceManager,
+                    transactions: $transactions,
+                    totalExpense: $totalExpense,
+                    friends: $friendManager.friends,
+                    parsedItems: itemCosts,
+                    tax: taxAmount ?? 0.0,
+                    total: totalAmount ?? 0.0
+                )
                 .tabItem {
-                    Label("Home", systemImage: "house")
+                    Label("Balances", systemImage: "gear")
                 }
-            LogView(balanceManager: balanceManager, friendManager: friendManager, transactions: $transactions)
-                .tabItem {
-                    Label("Log", systemImage: "list.bullet")
-                }
-            
-            BalanceView(balanceManager: balanceManager)
-                .tabItem {
-                    Label("Balances", systemImage: "chart.bar")
-                }
-            CalculateReceiptView(
-                            balanceManager: balanceManager,
-                            transactions: $transactions,
-                            totalExpense: $totalExpense,
-                            friends: $friendManager.friends,
-                            parsedItems: [("Coffee", 4.50), ("Sandwich", 7.25), ("Salad", 6.00)],
-                            tax: 1.0,
-                            total: 20.0
-                        )
-            .tabItem {
-                Label("Balances", systemImage: "gear")
+                
+                SettingsView()
+                    .tabItem {
+                        Label("Settings", systemImage: "gear")
+                    }
             }
-            SettingsView()
-                .tabItem {
-                    Label("Settings", systemImage: "gear")
-                }
+            .onAppear {
+                loadTransactions()
+            }
             
-        }
-        .onAppear {
-            loadTransactions()
+            Button(action: {
+                isShowingReceiptScanner = true
+            }) {
+                Text("Scan Receipt")
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+            }
+            .padding()
+            .sheet(isPresented: $isShowingReceiptScanner) {
+                ReceiptScannerView(
+                    scannedText: $scannedReceiptText,
+                    itemCosts: $itemCosts,
+                    totalAmount: $totalAmount,
+                    taxAmount: $taxAmount
+                )
+            }
+            .onChange(of: scannedReceiptText) { newValue in
+                let parsedData = parseReceiptDetails(from: newValue)
+                itemCosts = parsedData.items
+                totalAmount = parsedData.total
+                taxAmount = parsedData.tax
+            }
+
         }
     }
-    
+
     private func loadTransactions() {
         guard let groupId = group.id else {
             print("Error: Group ID is missing")
