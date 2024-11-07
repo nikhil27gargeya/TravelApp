@@ -3,7 +3,7 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 struct AddTransactionView: View {
-    let groupId: String // Pass the group ID here for scoping
+    let groupId: String
     @Binding var totalExpense: Double
     @Binding var transactions: [UserExpense]
     @Binding var friends: [Friend]
@@ -15,6 +15,7 @@ struct AddTransactionView: View {
     @State private var splitType: SplitType = .evenly
     @State private var selectedFriend: Friend?
     @State private var showReceiptScanner = false
+    @State private var navigationPath = [String]() // New state for managing navigation path
     @State private var scannedText: String = ""
     @State private var parsedItems: [(String, Double)] = []
     @State private var tax: Double? = 0.0
@@ -27,7 +28,7 @@ struct AddTransactionView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack(path: $navigationPath) {
             VStack {
                 Form {
                     TextField("Amount", text: $amount)
@@ -103,7 +104,7 @@ struct AddTransactionView: View {
                 .padding()
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(8)
-                
+
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
@@ -123,12 +124,27 @@ struct AddTransactionView: View {
                     taxAmount: $tax
                 )
                 .onDisappear {
+                    print("Parsed Items: \(parsedItems)")
+                    print("Total: \(total ?? 0.0)")
+                    print("Tax: \(tax ?? 0.0)")
                     // After the sheet is dismissed, update the amount and description fields
-                    if let firstItem = parsedItems.first, let totalValue = total {
-                        amount = String(format: "%.2f", totalValue)
-                        description = "Receipt Transaction"
-                        distributeAmountEvenly()
+                    if !parsedItems.isEmpty {
+                        // Navigate to CalculateReceiptView using the new navigation mechanism
+                        navigationPath.append("calculateReceipt")
                     }
+                }
+            }
+            .navigationDestination(for: String.self) { destination in
+                if destination == "calculateReceipt" {
+                    CalculateReceiptView(
+                        balanceManager: balanceManager,
+                        transactions: $transactions,
+                        totalExpense: $totalExpense,
+                        friends: $friends,
+                        parsedItems: parsedItems,
+                        tax: tax ?? 0.0,
+                        total: total ?? 0.0
+                    )
                 }
             }
         }

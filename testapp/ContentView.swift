@@ -7,12 +7,12 @@ struct ContentView: View {
     @StateObject private var balanceManager: BalanceManager
     @State private var transactions: [UserExpense] = []
     @State private var totalExpense: Double = 0.0
-    @State private var scannedReceiptText: String = ""
+    @State private var scannedText: String = ""
     @State private var itemCosts: [(String, Double)] = []
     @State private var totalAmount: Double?
     @State private var taxAmount: Double?
     @State private var isShowingReceiptScanner = false
-
+    
     init(group: Group) {
         self.group = group
         _friendManager = StateObject(wrappedValue: FriendManager(groupId: group.id ?? ""))
@@ -35,18 +35,6 @@ struct ContentView: View {
                     .tabItem {
                         Label("Balances", systemImage: "chart.bar")
                     }
-                CalculateReceiptView(
-                    balanceManager: balanceManager,
-                    transactions: $transactions,
-                    totalExpense: $totalExpense,
-                    friends: $friendManager.friends,
-                    parsedItems: itemCosts,
-                    tax: taxAmount ?? 0.0,
-                    total: totalAmount ?? 0.0
-                )
-                .tabItem {
-                    Label("Balances", systemImage: "gear")
-                }
                 
                 SettingsView()
                     .tabItem {
@@ -55,31 +43,6 @@ struct ContentView: View {
             }
             .onAppear {
                 loadTransactions()
-            }
-            
-            Button(action: {
-                isShowingReceiptScanner = true
-            }) {
-                Text("Scan Receipt")
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-            }
-            .padding()
-            .sheet(isPresented: $isShowingReceiptScanner) {
-                ReceiptScannerView(
-                    scannedText: $scannedReceiptText,
-                    itemCosts: $itemCosts,
-                    totalAmount: $totalAmount,
-                    taxAmount: $taxAmount
-                )
-            }
-            .onChange(of: scannedReceiptText) { newValue in
-                let parsedData = parseReceiptDetails(from: newValue)
-                itemCosts = parsedData.items
-                totalAmount = parsedData.total
-                taxAmount = parsedData.tax
             }
 
         }
