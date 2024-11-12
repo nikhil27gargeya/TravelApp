@@ -8,19 +8,19 @@ struct ReceiptScannerView: UIViewControllerRepresentable {
     @Binding var itemCosts: [(String, Double)] // New binding to hold item names and their costs
     @Binding var totalAmount: Double? // New binding for total amount
     @Binding var taxAmount: Double? // New binding for tax amount
-
+    
     func makeCoordinator() -> Coordinator {
         return Coordinator(scannedText: $scannedText, itemCosts: $itemCosts, totalAmount: $totalAmount, taxAmount: $taxAmount)
     }
-
+    
     func makeUIViewController(context: Context) -> VNDocumentCameraViewController {
         let viewController = VNDocumentCameraViewController()
         viewController.delegate = context.coordinator
         return viewController
     }
-
+    
     func updateUIViewController(_ uiViewController: VNDocumentCameraViewController, context: Context) {}
-
+    
     class Coordinator: NSObject, VNDocumentCameraViewControllerDelegate {
         @Binding var scannedText: String
         @Binding var itemCosts: [(String, Double)]
@@ -56,7 +56,7 @@ struct ReceiptScannerView: UIViewControllerRepresentable {
                 self.scannedText = observations.compactMap { $0.topCandidates(1).first?.string }.joined(separator: "\n")
                 print("Scanned Text After Recognition: \(self.scannedText)")
                 
-                // Parse the scanned text for items, tax, and total
+                // Parse the scanned text for items, subtotal, and tax
                 let parsedData = self.parseReceiptDetails(from: self.scannedText)
                 
                 // Update the bindings with the parsed data
@@ -75,11 +75,10 @@ struct ReceiptScannerView: UIViewControllerRepresentable {
         
         private func parseReceiptDetails(from scannedText: String) -> (items: [(String, Double)], tax: Double, total: Double) {
             var parsedItemCosts: [(String, Double)] = []
+            var subtotal: Double?
             var tax: Double = 0.0
-            var total: Double = 0.0
             let lines = scannedText.split(separator: "\n").map { String($0) }
 
-            var itemNames: [String] = []
             var itemPrices: [Double] = []
 
             print("Scanned Text Lines:")
@@ -100,17 +99,20 @@ struct ReceiptScannerView: UIViewControllerRepresentable {
                         print("Found Price: \(price)")
                         itemPrices.append(price)
                     }
-                } else if !trimmedLine.lowercased().contains("subtotal") &&
-                          !trimmedLine.lowercased().contains("tax") &&
-                          !trimmedLine.lowercased().contains("total") &&
-                          !trimmedLine.isEmpty {
-                    // Add line to item names if it doesn't contain keywords and isn't empty
-                    print("Found Item Name: \(trimmedLine)")
-                    itemNames.append(trimmedLine)
                 }
 
-                // Look for tax and total specifically
-                if trimmedLine.lowercased().contains("tax") {
+                // Look for subtotal, tax, and total specifically
+                if trimmedLine.lowercased().contains("subtotal") {
+                    let subtotalPattern = #"\$(\d+(\.\d{1,2})?)$"#
+                    if let subtotalMatch = line.matchingStrings(for: subtotalPattern).first,
+                       subtotalMatch.count > 1 {
+                        let subtotalValueString = subtotalMatch[1]
+                        if let subtotalValue = Double(subtotalValueString) {
+                            subtotal = subtotalValue
+                            print("Found Subtotal: \(subtotal ?? 0.0)")
+                        }
+                    }
+                } else if trimmedLine.lowercased().contains("tax") {
                     let taxPattern = #"\$(\d+(\.\d{1,2})?)$"#
                     if let taxMatch = line.matchingStrings(for: taxPattern).first,
                        taxMatch.count > 1 {
@@ -126,24 +128,32 @@ struct ReceiptScannerView: UIViewControllerRepresentable {
                        totalMatch.count > 1 {
                         let totalValueString = totalMatch[1]
                         if let totalValue = Double(totalValueString) {
-                            total = totalValue
-                            print("Found Total: \(total)")
+                            subtotal = totalValue
+                            print("Found Total: \(subtotal ?? 0.0)")
                         }
                     }
                 }
             }
 
-            // Match item names with item prices based on their sequence
-            let itemCount = min(itemNames.count, itemPrices.count)
-            for i in 0..<itemCount {
-                parsedItemCosts.append((itemNames[i], itemPrices[i]))
+            // Assign generic names ("Item 1", "Item 2", etc.) to the parsed prices
+            for (index, price) in itemPrices.enumerated() {
+                let itemName = "Item \(index + 1)"
+                parsedItemCosts.append((itemName, price))
+            }
+
+            // Validate that the sum of item prices matches the subtotal
+            let calculatedSubtotal = itemPrices.reduce(0.0, +)
+            if let expectedSubtotal = subtotal, calculatedSubtotal != expectedSubtotal {
+                print("Warning: Calculated subtotal (\(calculatedSubtotal)) does not match expected subtotal (\(expectedSubtotal))")
+            } else {
+                print("Subtotal matches calculated total.")
             }
 
             print("Parsed Items: \(parsedItemCosts)")
             print("Parsed Tax: \(tax)")
-            print("Parsed Total: \(total)")
+            print("Parsed Subtotal: \(subtotal ?? 0.0)")
 
-            return (items: parsedItemCosts, tax: tax, total: total)
+            return (items: parsedItemCosts, tax: tax, total: subtotal ?? 0.0)
         }
     }
 }
