@@ -35,6 +35,10 @@ struct ContentView: View {
                     .tabItem {
                         Label("Balances", systemImage: "chart.bar")
                     }
+                GroqView()
+                    .tabItem {
+                        Label("Groq", systemImage: "gear")
+                    }
                 SettingsView()
                     .tabItem {
                         Label("Settings", systemImage: "gear")
