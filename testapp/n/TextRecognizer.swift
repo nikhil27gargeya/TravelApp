@@ -1,7 +1,7 @@
-import SwiftUI
 import Vision
-import VisionKit
 import UIKit
+import VisionKit
+import SwiftUI
 
 final class TextRecognizer {
     let cameraScan: VNDocumentCameraScan?
@@ -64,9 +64,8 @@ final class TextRecognizer {
         }
 
         dispatchGroup.notify(queue: .main) {
-            print("Recognized text results: \(textResults)") // Debugging output
+            print("Recognized text results: \(textResults)") // Debugging output to see the recognized text
             completionHandler(textResults)
         }
     }
-
 }

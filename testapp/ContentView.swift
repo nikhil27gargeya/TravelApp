@@ -22,6 +22,7 @@ struct ContentView: View {
     var body: some View {
         VStack {
             TabView {
+                
                 HomeView(groupId: group.id ?? "default")
                     .tabItem {
                         Label("Home", systemImage: "house")
@@ -33,12 +34,18 @@ struct ContentView: View {
                 
                 BalanceView(balanceManager: balanceManager)
                     .tabItem {
-                        Label("Balances", systemImage: "chart.bar")
+                        Label("Balances", systemImage: "creditcard")
+                        //arrow.left.arrow.right
                     }
-                GroqView(scannedText: $scannedText)
-                    .tabItem {
-                        Label("Groq", systemImage: "gear")
-                    }
+                GroqView(scannedText: $scannedText,
+                         balanceManager: balanceManager,  // Pass balanceManager
+                         totalExpense: $totalExpense,    // Pass totalExpense
+                         transactions: $transactions,    // Pass transactions
+                         friends: $friendManager.friends, // Pass friends from FriendManager
+                         friendManager: friendManager)   // Pass friendManager
+                .tabItem {
+                    Label("Scan Receipt", systemImage: "doc.text.viewfinder")
+                }
                 SettingsView()
                     .tabItem {
                         Label("Settings", systemImage: "gear")

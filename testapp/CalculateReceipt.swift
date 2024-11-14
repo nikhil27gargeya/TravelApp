@@ -1,22 +1,22 @@
 import SwiftUI
-import FirebaseFirestore
-import FirebaseFirestoreSwift
 
 struct CalculateReceiptView: View {
+    @Binding var scannedText: String
+    @Binding var parsedItems: [(String, Double)]  // Pass parsedItems as a Binding
+    @Binding var totalAmount: Double?
+    @Binding var taxAmount: Double?
     @ObservedObject var balanceManager: BalanceManager
     @Binding var transactions: [UserExpense]
     @Binding var totalExpense: Double
-    @State private var selectedPerson: [String: String] = [:]
-    @State private var selectedPayer: String? = nil
     @Binding var friends: [Friend]
-    var parsedItems: [(String, Double)]
-    var tax: Double
-    var total: Double
+    
+    @State private var selectedPayer: String? = nil
+    @State private var selectedPerson: [String: String] = [:]
     @State private var isSaving = false
 
     var body: some View {
         VStack {
-            // Payer Picker
+            // Payer Picker (who paid the bill)
             Picker("Who Paid?", selection: $selectedPayer) {
                 ForEach(friends, id: \.id) { friend in
                     Text(friend.name).tag(friend.name as String?)
@@ -41,6 +41,14 @@ struct CalculateReceiptView: View {
                 .padding(.vertical, 4)
             }
 
+            // Tax display
+            Text("Tax: $\(taxAmount ?? 0.0, specifier: "%.2f")")
+                .padding()
+
+            // Total display
+            Text("Total: $\(totalAmount ?? 0.0, specifier: "%.2f")")
+                .padding()
+
             // Finish Button
             Button("Finish") {
                 calculateAndSaveExpenses()
@@ -50,7 +58,7 @@ struct CalculateReceiptView: View {
             .disabled(!isFormComplete() || isSaving)
         }
         .onAppear {
-            printFriendsList()
+            print("Parsed items: \(parsedItems)")
         }
     }
 
@@ -83,67 +91,20 @@ struct CalculateReceiptView: View {
         }
 
         // Add tax proportionally to all participants
-        if tax > 0 {
+        if let tax = taxAmount, tax > 0 {
             let taxPerPerson = tax / Double(expensesPerPerson.keys.count)
             for person in expensesPerPerson.keys {
                 expensesPerPerson[person, default: 0.0] += taxPerPerson
             }
         }
 
-        // Call function to save the transaction
+        // Save the transaction
         saveTransaction(expensesPerPerson: expensesPerPerson, payer: payer)
     }
 
     // Save transaction to Firestore
     private func saveTransaction(expensesPerPerson: [String: Double], payer: String) {
-        let groupId = balanceManager.groupId
-        
-        // Ensure the groupId is valid
-        guard !groupId.isEmpty else {
-            print("Error: Group ID is empty.")
-            return
-        }
-        
-        let totalAmount = parsedItems.reduce(0) { $0 + $1.1 } + tax
-        let newExpense = UserExpense(
-            amount: totalAmount,
-            date: Date(),
-            description: "Receipt Transaction",
-            splitDetails: expensesPerPerson,
-            participants: Array(expensesPerPerson.keys),
-            payer: payer
-        )
-        
-        isSaving = true
-        
-        let db = Firestore.firestore()
-        do {
-            let _ = try db.collection("groups").document(groupId).collection("transactions").addDocument(from: newExpense) { error in
-                if let error = error {
-                    print("Error saving transaction to Firebase: \(error.localizedDescription)")
-                    isSaving = false
-                } else {
-                    transactions.append(newExpense)
-                    totalExpense += newExpense.amount
-                    balanceManager.updateBalances(with: expensesPerPerson, payer: payer)
-                    isSaving = false
-                    print("Transaction saved successfully!")
-                }
-            }
-        } catch {
-            print("Error encoding transaction: \(error.localizedDescription)")
-            isSaving = false
-        }
-    }
-
-
-    // Debugging function to check friends list
-    private func printFriendsList() {
-        if friends.isEmpty {
-            print("Friends list is empty.")
-        } else {
-            print("Friends list:")
-            friends.forEach { print($0.name) }
-        }
+        // Implement Firestore saving logic here
+        print("Saving transaction: \(expensesPerPerson), payer: \(payer)")
     }
 }

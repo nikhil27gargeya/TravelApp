@@ -1,5 +1,6 @@
 import SwiftUI
 
+//This is the view that comes from a balanceview card to show the breakdown of how the owestatement was calculated
 struct TransactionDetailView: View {
     let statement: OweStatement
     let transactions: [UserExpense]

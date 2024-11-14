@@ -95,16 +95,6 @@ struct AddTransactionView: View {
                         distributeAmountEvenly()
                     }
                 }
-                
-                // Scan Receipt Button
-                Button("Scan Receipt") {
-                    showReceiptScanner.toggle()
-                }
-                .foregroundColor(.green)
-                .padding()
-                .background(Color.gray.opacity(0.2))
-                .cornerRadius(8)
-
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
@@ -115,6 +105,17 @@ struct AddTransactionView: View {
                         }
                     }
                 }
+                
+                // Scan Receipt Button
+                Button("Scan Receipt") {
+                    showReceiptScanner.toggle()
+                }
+                .foregroundColor(.green)
+                .padding()
+                .background(Color.gray.opacity(0.2))
+                .cornerRadius(8)
+
+                
             }
             .sheet(isPresented: $showReceiptScanner) {
                 ReceiptScannerView(
@@ -123,29 +124,6 @@ struct AddTransactionView: View {
                     totalAmount: $total,
                     taxAmount: $tax
                 )
-                .onDisappear {
-                    print("Parsed Items: \(parsedItems)")
-                    print("Total: \(total ?? 0.0)")
-                    print("Tax: \(tax ?? 0.0)")
-                    // After the sheet is dismissed, update the amount and description fields
-                    if !parsedItems.isEmpty {
-                        // Navigate to CalculateReceiptView using the new navigation mechanism
-                        navigationPath.append("calculateReceipt")
-                    }
-                }
-            }
-            .navigationDestination(for: String.self) { destination in
-                if destination == "calculateReceipt" {
-                    CalculateReceiptView(
-                        balanceManager: balanceManager,
-                        transactions: $transactions,
-                        totalExpense: $totalExpense,
-                        friends: $friends,
-                        parsedItems: parsedItems,
-                        tax: tax ?? 0.0,
-                        total: total ?? 0.0
-                    )
-                }
             }
         }
     }
