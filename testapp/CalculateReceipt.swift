@@ -11,7 +11,7 @@ struct CalculateReceiptView: View {
     @Binding var friends: [Friend]
     
     @State private var selectedPayer: String? = nil
-    @State private var selectedPerson: [String: String] = [:]
+    @State private var selectedPerson: [String: String] = [:] // To track who paid for each item
     @State private var isSaving = false
 
     var body: some View {
@@ -26,19 +26,25 @@ struct CalculateReceiptView: View {
             .frame(width: 200)
             .padding(.vertical, 8)
 
-            // Items Picker for each parsed item
-            ForEach(parsedItems, id: \.0) { item in
-                HStack {
-                    Text("\(item.0): $\(item.1, specifier: "%.2f")")
-                    Picker("Who Bought?", selection: personBinding(for: item.0)) {
-                        ForEach(friends, id: \.id) { friend in
-                            Text(friend.name).tag(friend.name)
+            // Show the items, prices, tax, and total
+            if parsedItems.isEmpty {
+                Text("No items available.")
+                    .padding()
+            } else {
+                // Items Picker for each parsed item
+                ForEach(parsedItems, id: \.0) { item in
+                    HStack {
+                        Text("\(item.0): $\(item.1, specifier: "%.2f")")
+                        Picker("Who Bought?", selection: personBinding(for: item.0)) {
+                            ForEach(friends, id: \.id) { friend in
+                                Text(friend.name).tag(friend.name)
+                            }
                         }
+                        .pickerStyle(MenuPickerStyle())
+                        .frame(width: 150)
                     }
-                    .pickerStyle(MenuPickerStyle())
-                    .frame(width: 150)
+                    .padding(.vertical, 4)
                 }
-                .padding(.vertical, 4)
             }
 
             // Tax display
@@ -58,11 +64,12 @@ struct CalculateReceiptView: View {
             .disabled(!isFormComplete() || isSaving)
         }
         .onAppear {
-            print("Parsed items: \(parsedItems)")
+            print("Parsed Items in CalculateReceiptView: \(parsedItems)")
+
         }
     }
 
-    // Check if the form is complete
+    // Check if the form is complete (all items have been assigned to someone)
     private func isFormComplete() -> Bool {
         return parsedItems.allSatisfy { selectedPerson[$0.0] != nil } && selectedPayer != nil
     }
@@ -106,5 +113,6 @@ struct CalculateReceiptView: View {
     private func saveTransaction(expensesPerPerson: [String: Double], payer: String) {
         // Implement Firestore saving logic here
         print("Saving transaction: \(expensesPerPerson), payer: \(payer)")
+        // After saving, update the UI accordingly (e.g., updating transactions, expenses, etc.)
     }
 }

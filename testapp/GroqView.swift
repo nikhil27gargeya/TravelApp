@@ -35,12 +35,12 @@ struct GroqView: View {
                 NavigationLink(destination: CalculateReceiptView(
                                     scannedText: $scannedText,
                                     parsedItems: $parsedItems,  // Pass parsedItems as a Binding
-                                    totalAmount: $total,
-                                    taxAmount: $tax,
+                                    totalAmount: $total,        // Pass totalAmount as a Binding
+                                    taxAmount: $tax,            // Pass taxAmount as a Binding
                                     balanceManager: balanceManager,  // Pass balanceManager
                                     transactions: $transactions,    // Pass transactions
                                     totalExpense: $totalExpense,    // Pass totalExpense
-                                    friends: $friendManager.friends // Pass friends from FriendManager
+                                    friends: $friends           // Pass friends from FriendManager
                                 ), isActive: $showCalculateReceiptView) {
                     EmptyView()
                 }
@@ -75,7 +75,7 @@ struct GroqView: View {
         \(scannedText)
         
         Please format the output in a structured manner:
-        - Item: [name], Price: [price]
+        - Name: [name], Price: [price]
         - Subtotal: [subtotal]
         - Tax: [tax]
         - Total: [total]
@@ -86,6 +86,7 @@ struct GroqView: View {
             DispatchQueue.main.async {
                 if let response = response {
                     aiOutput = response
+                    parseReceiptData(from: aiOutput)
                 } else {
                     aiOutput = "Failed to generate a response."
                 }
@@ -93,5 +94,45 @@ struct GroqView: View {
             }
         }
     }
-}
 
+    func parseReceiptData(from aiOutput: String) {
+        var items: [(String, Double)] = []
+        
+        // Split the input into lines
+        let lines = aiOutput.split(separator: "\n")
+        print("Lines: \(lines)") // Debug the split lines
+        
+        // Loop through the lines to extract item data
+        for line in lines {
+            print("Line: \(line)") // Debug the current line
+            
+            // Parse item and price (assuming format like "1. BBQ Potato Chips, Price: $7.00")
+            if line.contains("Price:") {
+                // Split the line at the comma, where the item name is before the comma and the price is after
+                let components = line.split(separator: ",")
+                print("Components: \(components)") // Debug the split components
+                
+                if components.count > 1 {
+                    let itemName = components[0].trimmingCharacters(in: .whitespaces)  // Item name (before comma)
+                    let priceString = components[1].split(separator: ":").last?.trimmingCharacters(in: .whitespaces) // Price (after colon)
+                    
+                    print("Item Name: \(itemName), Price String: \(priceString)") // Debug item name and price
+                    
+                    // Remove the "$" sign and convert to Double
+                    if let price = priceString?.replacingOccurrences(of: "$", with: ""),
+                       let itemPrice = Double(price) {
+                        print("Parsed Item: \(itemName), Price: \(itemPrice)") // Debug the final parsed item
+                        items.append((itemName, itemPrice))
+                    }
+                }
+            }
+        }
+        
+        // Set parsedItems
+        self.parsedItems = items
+        
+        // Debug output to check parsed data
+        print("Parsed Items: \(parsedItems)")
+    }
+
+}
