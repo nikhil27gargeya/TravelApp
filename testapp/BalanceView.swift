@@ -9,7 +9,7 @@ struct BalanceView: View {
     @State private var isLoading: Bool = true
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 if isLoading {
                     ProgressView("Loading...")

@@ -12,7 +12,7 @@ struct HomeView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 List {
                     ForEach(friendManager.friends) { friend in

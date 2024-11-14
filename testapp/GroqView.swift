@@ -16,7 +16,7 @@ struct GroqView: View {
     @ObservedObject var friendManager: FriendManager
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 // Display the scanned and formatted receipt text
                 Text(aiOutput)

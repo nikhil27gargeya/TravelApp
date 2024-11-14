@@ -95,17 +95,6 @@ struct AddTransactionView: View {
                         distributeAmountEvenly()
                     }
                 }
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
-                            presentationMode.wrappedValue.dismiss()
-                        }) {
-                            Image(systemName: "xmark")
-                                .font(.title2)
-                        }
-                    }
-                }
-                
                 // Scan Receipt Button
                 Button("Scan Receipt") {
                     showReceiptScanner.toggle()
@@ -190,7 +179,6 @@ struct AddTransactionView: View {
                         }
                     }
                     isLoading = false // End loading
-                    presentationMode.wrappedValue.dismiss()
                 }
         } catch {
             print("Error encoding transaction: \(error)")

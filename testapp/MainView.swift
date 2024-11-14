@@ -8,11 +8,11 @@ struct MainView: View {
     var body: some View {
         VStack {
             if isSignedIn, let unwrappedUserId = userId {
-                NavigationView {
+                NavigationStack {
                     GroupView(userId: unwrappedUserId)
                 }
             } else {
-                NavigationView {
+                NavigationStack {
                     SignInView(onSignIn: handleSignIn)
                 }
             }

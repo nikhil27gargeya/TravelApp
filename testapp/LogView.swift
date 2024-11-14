@@ -18,7 +18,7 @@ struct LogView: View {
     @Binding var transactions: [UserExpense]
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 VStack {
                     transactionList

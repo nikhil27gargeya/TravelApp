@@ -10,7 +10,7 @@ struct SettingsView: View {
     @State private var errorMessage: String?
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
                 Section(header: Text("Default Currency")) {
                     Picker("Currency", selection: $selectedCurrency) {

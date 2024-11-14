@@ -16,7 +16,7 @@ struct GroupView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 Text("TravBank")
                     .font(.largeTitle)
