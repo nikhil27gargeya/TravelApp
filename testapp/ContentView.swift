@@ -35,7 +35,7 @@ struct ContentView: View {
                     .tabItem {
                         Label("Balances", systemImage: "chart.bar")
                     }
-                GroqView()
+                GroqView(scannedText: $scannedText)
                     .tabItem {
                         Label("Groq", systemImage: "gear")
                     }
