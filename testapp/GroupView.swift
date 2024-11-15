@@ -25,7 +25,8 @@ struct GroupView: View {
                 List {
                     ForEach(groupManager.groups) { group in
                         // Navigation link to ContentView for each group
-                        NavigationLink(destination: ContentView(group: group)) {
+                        NavigationLink(destination: ContentView(group: group)
+                        ) {
                             VStack(alignment: .leading) {
                                 Text(group.name)
                                 Text("Code: \(group.code)")

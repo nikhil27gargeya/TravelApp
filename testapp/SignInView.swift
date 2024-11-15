@@ -1,6 +1,7 @@
 import SwiftUI
 import FirebaseAuth
 import AuthenticationServices
+
 // MARK: - Sign In View
 struct SignInView: View {
     @State private var email = ""
@@ -10,19 +11,41 @@ struct SignInView: View {
 
     var body: some View {
         VStack {
-            Text("Sign In")
-                .font(.largeTitle)
+            Image("landingpageimage")  // Example image, you can replace with your own
+                .resizable()
+                .scaledToFit()
+                .frame(width: 400, height: 300)
+                .padding(.top, 50)
+            
+            Text("Welcome to Travbank 👋")
+                .font(.title)
+                .fontWeight(.bold)
                 .padding()
 
+            // Email TextField with outlined style
             TextField("Email", text: $email)
                 .padding()
                 .keyboardType(.emailAddress)
                 .autocapitalization(.none)
-                .background(Color.gray.opacity(0.2).cornerRadius(5))
+                .background(Color.white)
+                .cornerRadius(5)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 5)
+                        .stroke(Color.gray, lineWidth: 1)
+                )
+                .padding(.horizontal, 10)
 
+            // Password SecureField with outlined style
             SecureField("Password", text: $password)
                 .padding()
-                .background(Color.gray.opacity(0.2).cornerRadius(5))
+            
+                .background(Color.white)
+                .cornerRadius(5)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 5)
+                        .stroke(Color.gray, lineWidth: 1)
+                )
+                .padding(.horizontal, 10)
 
             if let error = errorMessage {
                 Text(error)
@@ -30,17 +53,22 @@ struct SignInView: View {
                     .padding()
             }
 
+            // Sign In Button
             Button("Sign In") {
                 signIn()
             }
             .padding()
-            .background(Color.green)
+            .frame(maxWidth: .infinity)
+            .background(Color.black)
             .foregroundColor(.white)
             .cornerRadius(8)
+            .padding(.top, 20)
 
+            // Sign Up Navigation Link
             NavigationLink(destination: SignUpView(onSignUp: onSignIn)) {
                 Text("Don't have an account? Sign Up")
                     .padding()
+                    .foregroundColor(.blue)
             }
 
             Spacer()
@@ -51,7 +79,7 @@ struct SignInView: View {
     private func signIn() {
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
             if let error = error {
-                self.errorMessage = "Error: \(error.localizedDescription)"
+                self.errorMessage = "Please enter valid email and password"
             } else {
                 self.errorMessage = nil
                 onSignIn?()

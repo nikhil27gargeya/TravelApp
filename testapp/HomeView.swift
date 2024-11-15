@@ -12,14 +12,14 @@ struct HomeView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationView {
             VStack {
                 List {
                     ForEach(friendManager.friends) { friend in
                         Text(friend.name)
                     }
                 }
-                .navigationTitle("Friends in Group")
+                .navigationTitle("Home")
                 .onAppear {
                     friendManager.loadFriends()
                 }

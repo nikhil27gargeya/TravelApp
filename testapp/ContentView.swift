@@ -22,21 +22,22 @@ struct ContentView: View {
     var body: some View {
         VStack {
             TabView {
-                
-                HomeView(groupId: group.id ?? "default")
-                    .tabItem {
-                        Label("Home", systemImage: "house")
-                    }
+                    HomeView(groupId: group.id ?? "default")
+                        .tabItem {
+                            Label("Home", systemImage: "house")
+                        }
+                    
                 LogView(balanceManager: balanceManager, friendManager: friendManager, transactions: $transactions)
                     .tabItem {
                         Label("Log", systemImage: "list.bullet")
                     }
-                
+                    .navigationBarBackButtonHidden(true)
                 BalanceView(balanceManager: balanceManager)
                     .tabItem {
                         Label("Balances", systemImage: "creditcard")
                         //arrow.left.arrow.right
                     }
+                    .navigationBarBackButtonHidden(true)
                 GroqView(scannedText: $scannedText,
                          balanceManager: balanceManager,  // Pass balanceManager
                          totalExpense: $totalExpense,    // Pass totalExpense
@@ -46,10 +47,12 @@ struct ContentView: View {
                 .tabItem {
                     Label("Scan Receipt", systemImage: "doc.text.viewfinder")
                 }
+                .navigationBarBackButtonHidden(true)
                 SettingsView()
                     .tabItem {
                         Label("Settings", systemImage: "gear")
                     }
+                    .navigationBarBackButtonHidden(true)
             }
             .onAppear {
                 loadTransactions()

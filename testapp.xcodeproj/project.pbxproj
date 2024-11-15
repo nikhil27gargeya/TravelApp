@@ -154,17 +154,9 @@
 				7DE7CB612CD988E100057217 /* FriendManager.swift */,
 				7DF97C892CD160B900A3B552 /* Friend.swift */,
 				7D4045692CD2E0EA00200DFE /* BalanceManager.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		7DE7CB6F2CD9C55F00057217 /* n */ = {
-			isa = PBXGroup;
-			children = (
-				7DF97C802CD09AEC00A3B552 /* ReceiptScannerView.swift */,
 				7DE81B152CD1C4540087B521 /* TextRecognizer.swift */,
 			);
-			path = n;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		7DF97C402CD0980400A3B552 = {
@@ -192,9 +184,9 @@
 			children = (
 				7D32F4012CE426F30099DA4E /* Info.plist */,
 				7DE7CB762CD9FCFA00057217 /* testapp.entitlements */,
-				7DE7CB6F2CD9C55F00057217 /* n */,
 				7D4045682CD2E0DF00200DFE /* Models */,
 				7DF97C4C2CD0980500A3B552 /* testappApp.swift */,
+				7DF97C802CD09AEC00A3B552 /* ReceiptScannerView.swift */,
 				7DF97C762CD098C900A3B552 /* HomeView.swift */,
 				7DF97C782CD098CF00A3B552 /* LogView.swift */,
 				7DE81B132CD1ACBE0087B521 /* BalanceView.swift */,

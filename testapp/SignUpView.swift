@@ -12,39 +12,53 @@ struct SignUpView: View {
 
     var body: some View {
         VStack {
-            Text("Sign Up")
-                .font(.largeTitle)
+            Text("Create an Account")
+                .font(.title)
+                .fontWeight(.bold)
                 .padding()
 
             TextField("Name", text: $userName)
                 .padding()
-                .background(Color.gray.opacity(0.2).cornerRadius(5))
-
+                .cornerRadius(5)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 5)
+                        .stroke(Color.gray, lineWidth: 1)
+                )
+                
             TextField("Email", text: $email)
                 .padding()
                 .keyboardType(.emailAddress)
                 .autocapitalization(.none)
-                .background(Color.gray.opacity(0.2).cornerRadius(5))
+                .cornerRadius(5)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 5)
+                        .stroke(Color.gray, lineWidth: 1)
+                )
 
             SecureField("Password", text: $password)
                 .padding()
-                .background(Color.gray.opacity(0.2).cornerRadius(5))
+                .cornerRadius(5)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 5)
+                        .stroke(Color.gray, lineWidth: 1)
+                )
 
             if let error = errorMessage {
                 Text(error)
                     .foregroundColor(.red)
                     .padding()
             }
+            Spacer()
 
             Button("Sign Up") {
                 signUp()
             }
             .padding()
-            .background(Color.blue)
+            .frame(maxWidth: .infinity)
+            .background(Color.black)
             .foregroundColor(.white)
             .cornerRadius(8)
-
-            Spacer()
+            .padding(.top, 20)
         }
         .padding()
     }
