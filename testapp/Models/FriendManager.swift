@@ -76,11 +76,12 @@ class FriendManager: ObservableObject {
             self.friends.removeAll() // Clear the friends list before reloading
             self.friends = fetchedFriends
 
-            if self.friends.isEmpty {
-                print("Friends list is empty after fetching all member details.")
-            } else {
-                print("Successfully loaded friends: \(self.friends)")
-            }
+    //        if self.friends.isEmpty {
+    //            print("Friends list is empty after fetching all member details.")
+    //        } else {
+    //            print("Successfully loaded friends: \(self.friends)")
+    //        }
+        
         }
     }
 }

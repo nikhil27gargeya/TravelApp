@@ -15,34 +15,38 @@ class BalanceManager: ObservableObject {
 
     func updateBalances(with expenses: [String: Double], payer: String) {
         DispatchQueue.main.async {
+            // Adjust balances for all friends except the payer
             for (friend, amount) in expenses {
                 guard amount != 0 else { continue }
-                
+
                 if friend != payer {
-                    // Safely update balances
                     self.balances[friend, default: 0.0] += amount
                     self.balances[payer, default: 0.0] -= amount
-                    
-                    // Avoid duplicate owed statements
-                    if let existingIndex = self.owedStatements.firstIndex(where: {
-                        $0.debtor == friend && $0.creditor == payer
-                    }) {
-                        // Update existing statement amount
-                        self.owedStatements[existingIndex].amount += amount
-                    } else {
-                        // Add new owed statement
-                        self.owedStatements.append(OweStatement(debtor: friend, creditor: payer, amount: amount))
-                    }
+
+                    // Update owed statements
+                    self.updateOwedStatements(debtor: friend, creditor: payer, amount: amount)
                 }
             }
 
-            // Save balances after updating
             self.saveBalances()
             print("Balances updated: \(self.balances)")
             print("Owed statements updated: \(self.owedStatements)")
         }
     }
 
+    // Updates or adds an owed statement
+    func updateOwedStatements(debtor: String, creditor: String, amount: Double) {
+        // Check if there's an existing statement for this debtor-creditor pair
+        if let existingIndex = owedStatements.firstIndex(where: {
+            $0.debtor == debtor && $0.creditor == creditor
+        }) {
+            // Update existing statement
+            owedStatements[existingIndex].amount += amount
+        } else {
+            // Add a new owed statement
+            owedStatements.append(OweStatement(debtor: debtor, creditor: creditor, amount: amount))
+        }
+    }
 
     func resetBalances() {
         balances.removeAll()
@@ -53,11 +57,9 @@ class BalanceManager: ObservableObject {
 
     // MARK: - Firestore Methods
 
-    private func saveBalances() {
-        // Convert balances dictionary to a valid format for Firestore
-        let balancesData = balances.mapValues { $0 } // Ensure it's [String: Double]
-
+    func saveBalances() {
         // Save balances to Firestore
+        let balancesData = balances.mapValues { $0 } // Ensure it's [String: Double]
         db.collection("balances").document(groupId).setData(["balances": balancesData]) { error in
             if let error = error {
                 print("Error saving balances: \(error.localizedDescription)")
@@ -66,7 +68,7 @@ class BalanceManager: ObservableObject {
             }
         }
 
-        // Save owed statements directly if it's Codable and Firestore supports it
+        // Save owed statements directly
         do {
             let statementsData = try owedStatements.map { try Firestore.Encoder().encode($0) } // Use Firestore encoder to encode each OweStatement
             db.collection("balances").document(groupId).updateData(["owedStatements": statementsData]) { error in
@@ -80,7 +82,6 @@ class BalanceManager: ObservableObject {
             print("Error encoding owed statements: \(error)")
         }
     }
-
 
     private func loadBalances() {
         db.collection("balances").document(groupId).getDocument { (document, error) in

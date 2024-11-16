@@ -43,7 +43,7 @@ struct ContentView: View {
                     balanceManager: balanceManager
                 )
                 .tabItem {
-                    Label("Add Transaction", systemImage: "plus.circle")
+                    Label("Add Transaction", systemImage: "plus")
                 }
                 
                 // Balance View

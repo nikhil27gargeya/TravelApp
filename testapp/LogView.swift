@@ -22,18 +22,8 @@ struct LogView: View {
                 VStack {
                     transactionList
                 }
-                addTransactionButton
             }
             .navigationTitle("Expense Log")
-            .sheet(isPresented: $showAddTransaction) {
-                AddTransactionView(
-                    groupId: balanceManager.groupId,
-                    totalExpense: $totalExpense,
-                    transactions: $transactions,
-                    friends: $friendManager.friends,
-                    balanceManager: balanceManager
-                )
-            }
             .onAppear {
                 loadTransactions()
             }
@@ -56,31 +46,34 @@ struct LogView: View {
         .listStyle(PlainListStyle())
         .frame(maxHeight: .infinity)
     }
-
-    private var addTransactionButton: some View {
-        VStack {
-            Spacer()
-            HStack {
-                Spacer()
-                Button(action: {
-                    showAddTransaction.toggle()
-                }) {
-                    Image(systemName: "plus")
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundColor(.white)
-                        .frame(width: 20, height: 20)
-                        .padding()
-                }
-                .background(Color.blue)
-                .clipShape(Circle())
-                .padding()
-            }
-        }
-    }
     
     // MARK: - Firestore Integration
+    //update balances after log view transaction deletion
+    private func updateBalancesAfterDeletion(transaction: UserExpense) {
+        let db = Firestore.firestore()
 
+        // Get the payer and split details
+        let payer = transaction.payer
+        let splitDetails = transaction.splitDetails
+
+        // Update the balance for the payer
+        for (friend, amount) in splitDetails {
+            if friend != payer {
+                // Subtract the amount from the payer's balance (they paid for others)
+                balanceManager.balances[payer, default: 0.0] -= amount
+                // Add the amount to the friend's balance (they owe the payer)
+                balanceManager.balances[friend, default: 0.0] += amount
+
+                // Update the owed statements using balanceManager
+                balanceManager.updateOwedStatements(debtor: friend, creditor: payer, amount: -amount)
+            }
+        }
+
+        // Save the updated balances and owed statements
+        balanceManager.saveBalances()
+        print("Balances and owed statements updated after transaction deletion.")
+    }
+    
     private func loadTransactions() {
         let db = Firestore.firestore()
         db.collection("groups").document(balanceManager.groupId).collection("transactions").getDocuments { snapshot, error in
@@ -109,6 +102,9 @@ struct LogView: View {
         // Remove the transaction from the local list first
         transactions.remove(atOffsets: offsets)
 
+        // Update the balances after deleting the transaction
+        updateBalancesAfterDeletion(transaction: transactionToDelete)
+
         let db = Firestore.firestore()
         let groupId = balanceManager.groupId
 
@@ -136,6 +132,4 @@ struct LogView: View {
                 }
             }
     }
-
-
 }

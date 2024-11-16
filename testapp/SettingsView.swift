@@ -8,38 +8,49 @@ struct SettingsView: View {
     
     @State private var userName: String = ""
     @State private var errorMessage: String?
+    
+    @Environment(\.presentationMode) var presentationMode  // To dismiss the view after logout
 
     var body: some View {
-            Form {
-                Section(header: Text("Default Currency")) {
-                    Picker("Currency", selection: $selectedCurrency) {
-                        ForEach(currencies, id: \.self) { currency in
-                            Text(currency)
-                        }
-                    }
-                    .pickerStyle(MenuPickerStyle())
-                    .onChange(of: selectedCurrency) { newValue in
-                        saveCurrency(newValue)
+        Form {
+            Section(header: Text("Default Currency")) {
+                Picker("Currency", selection: $selectedCurrency) {
+                    ForEach(currencies, id: \.self) { currency in
+                        Text(currency)
                     }
                 }
-                
-                Section(header: Text("User Information")) {
-                    TextField("Name", text: $userName)
-                        .onAppear {
-                            loadUserName()
-                        }
-                    
-                    Button("Save Name") {
-                        saveUserName()
-                    }
-                }
-                
-                if let error = errorMessage {
-                    Text(error)
-                        .foregroundColor(.red)
-                        .padding()
+                .pickerStyle(MenuPickerStyle())
+                .onChange(of: selectedCurrency) { newValue in
+                    saveCurrency(newValue)
                 }
             }
+            
+            Section(header: Text("User Information")) {
+                TextField("Name", text: $userName)
+                    .onAppear {
+                        loadUserName()
+                    }
+                
+                Button("Save Name") {
+                    saveUserName()
+                }
+            }
+            
+            if let error = errorMessage {
+                Text(error)
+                    .foregroundColor(.red)
+                    .padding()
+            }
+
+            // Logout Button
+            Section {
+                Button("Logout") {
+                    logout()
+                }
+                .foregroundColor(.red)
+            }
+        }
+        .navigationTitle("Settings")
     }
 
     func saveCurrency(_ currency: String) {
@@ -78,6 +89,16 @@ struct SettingsView: View {
             } else {
                 self.errorMessage = "Name updated successfully."
             }
+        }
+    }
+    
+    // Logout Function
+    func logout() {
+        do {
+            try Auth.auth().signOut()  // Sign the user out
+            self.presentationMode.wrappedValue.dismiss()  // Optionally dismiss the view after logout
+        } catch let signOutError as NSError {
+            self.errorMessage = "Error signing out: \(signOutError.localizedDescription)"
         }
     }
 }
