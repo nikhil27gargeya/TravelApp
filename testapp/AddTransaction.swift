@@ -19,6 +19,7 @@ struct AddTransactionView: View {
     @State private var tax: Double? = 0.0
     @State private var total: Double? = 0.0
     @State private var isLoading: Bool = false
+    @State private var errorMessage: String? = nil
 
     enum SplitType: String, CaseIterable {
         case evenly = "Split Evenly"
@@ -78,11 +79,17 @@ struct AddTransactionView: View {
                         }
                     }
 
+                    // Show Error Message if Split is Invalid
+                    if let errorMessage = errorMessage {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                            .padding(.top)
+                    }
+
                     // Save Button
                     Button("Save") {
                         saveTransaction()
                     }
-                    .disabled(isLoading)
                     .overlay(
                         isLoading ? AnyView(ProgressView()) : AnyView(EmptyView())
                     )
@@ -116,8 +123,30 @@ struct AddTransactionView: View {
         return formatter.string(from: NSNumber(value: amountValue)) ?? ""
     }
 
+    private func validateSplit() -> Bool {
+        guard let totalAmount = Double(amount) else { return false }
+
+        // Calculate the total of the custom split amounts
+        let totalSplitAmount = friends.reduce(0.0) { result, friend in
+            result + friend.share
+        }
+
+        if totalSplitAmount != totalAmount {
+            errorMessage = "The total split does not match the amount paid."
+            return false
+        }
+        
+        errorMessage = nil
+        return true
+    }
+
     private func saveTransaction() {
         guard let totalAmount = Double(amount), let paidBy = selectedFriend else { return }
+
+        // Validate the split amounts
+        if !validateSplit() {
+            return
+        }
 
         var splitDetails: [String: Double] = [:]
 

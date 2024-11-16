@@ -8,49 +8,59 @@ struct SettingsView: View {
     
     @State private var userName: String = ""
     @State private var errorMessage: String?
+    @State private var isLoggedOut = false
     
-    @Environment(\.presentationMode) var presentationMode  // To dismiss the view after logout
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
-        Form {
-            Section(header: Text("Default Currency")) {
-                Picker("Currency", selection: $selectedCurrency) {
-                    ForEach(currencies, id: \.self) { currency in
-                        Text(currency)
+        VStack {
+            if isLoggedOut {
+                // Navigate to SignIn view after logout
+                SignInView(onSignIn: {
+                    self.isLoggedOut = false
+                })
+            } else {
+                Form {
+                    Section(header: Text("Default Currency")) {
+                        Picker("Currency", selection: $selectedCurrency) {
+                            ForEach(currencies, id: \.self) { currency in
+                                Text(currency)
+                            }
+                        }
+                        .pickerStyle(MenuPickerStyle())
+                        .onChange(of: selectedCurrency) { newValue in
+                            saveCurrency(newValue)
+                        }
                     }
-                }
-                .pickerStyle(MenuPickerStyle())
-                .onChange(of: selectedCurrency) { newValue in
-                    saveCurrency(newValue)
-                }
-            }
-            
-            Section(header: Text("User Information")) {
-                TextField("Name", text: $userName)
-                    .onAppear {
-                        loadUserName()
-                    }
-                
-                Button("Save Name") {
-                    saveUserName()
-                }
-            }
-            
-            if let error = errorMessage {
-                Text(error)
-                    .foregroundColor(.red)
-                    .padding()
-            }
 
-            // Logout Button
-            Section {
-                Button("Logout") {
-                    logout()
+                    Section(header: Text("User Information")) {
+                        TextField("Name", text: $userName)
+                            .onAppear {
+                                loadUserName()
+                            }
+
+                        Button("Save Name") {
+                            saveUserName()
+                        }
+                    }
+
+                    if let error = errorMessage {
+                        Text(error)
+                            .foregroundColor(.red)
+                            .padding()
+                    }
+
+                    // Logout Button
+                    Section {
+                        Button("Logout") {
+                            logout()
+                        }
+                        .foregroundColor(.red)
+                    }
                 }
-                .foregroundColor(.red)
+                .navigationTitle("Settings")
             }
         }
-        .navigationTitle("Settings")
     }
 
     func saveCurrency(_ currency: String) {
@@ -61,7 +71,7 @@ struct SettingsView: View {
         guard let currentUser = Auth.auth().currentUser else {
             return
         }
-        
+
         let db = Firestore.firestore()
         let userRef = db.collection("users").document(currentUser.uid)
         
@@ -79,7 +89,7 @@ struct SettingsView: View {
             self.errorMessage = "No user signed in."
             return
         }
-        
+
         let db = Firestore.firestore()
         let userRef = db.collection("users").document(currentUser.uid)
         
@@ -96,7 +106,7 @@ struct SettingsView: View {
     func logout() {
         do {
             try Auth.auth().signOut()  // Sign the user out
-            self.presentationMode.wrappedValue.dismiss()  // Optionally dismiss the view after logout
+            self.isLoggedOut = true  // Set the logout state to trigger the navigation
         } catch let signOutError as NSError {
             self.errorMessage = "Error signing out: \(signOutError.localizedDescription)"
         }
