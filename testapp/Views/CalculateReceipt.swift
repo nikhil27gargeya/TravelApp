@@ -19,123 +19,125 @@ struct CalculateReceiptView: View {
     @State private var newItemPerson: [String] = [] // To allow multiple selections
     
     var body: some View {
-        VStack {
-            // Payer Picker (who paid the bill)
-            Picker("Who Paid?", selection: $selectedPayer) {
-                ForEach(friends, id: \.id) { friend in
-                    Text(friend.name).tag(friend.name as String?)
+        ScrollView { // Make the entire view scrollable
+            VStack {
+                // Payer Picker (who paid the bill)
+                Picker("Who Paid?", selection: $selectedPayer) {
+                    ForEach(friends, id: \.id) { friend in
+                        Text(friend.name).tag(friend.name as String?)
+                    }
                 }
-            }
-            .pickerStyle(MenuPickerStyle())
-            .frame(width: 200)
-            .padding(.vertical, 8)
+                .pickerStyle(MenuPickerStyle())
+                .frame(width: 200)
+                .padding(.vertical, 8)
 
-            // Show the items, prices, tax, and total
-            if parsedItems.isEmpty {
-                Text("No items available.")
-                    .padding()
-            } else {
-                // Items Picker for each parsed item
-                ForEach(parsedItems, id: \.0) { item in
-                    HStack {
-                        if isEditing {
-                            // Editable item name
-                            TextField("Item Name", text: Binding(
-                                get: { item.0 },
-                                set: { parsedItems[parsedItems.firstIndex(where: { $0.0 == item.0 })!].0 = $0 }
-                            ))
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .frame(width: 150)
+                // Show the items, prices, tax, and total
+                if parsedItems.isEmpty {
+                    Text("No items available.")
+                        .padding()
+                } else {
+                    // Items Picker for each parsed item
+                    ForEach(parsedItems, id: \.0) { item in
+                        HStack {
+                            if isEditing {
+                                // Editable item name
+                                TextField("Item Name", text: Binding(
+                                    get: { item.0 },
+                                    set: { parsedItems[parsedItems.firstIndex(where: { $0.0 == item.0 })!].0 = $0 }
+                                ))
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .frame(width: 150)
 
-                            // Editable price
-                            TextField("Price", value: Binding(
-                                get: { item.1 },
-                                set: { parsedItems[parsedItems.firstIndex(where: { $0.0 == item.0 })!].1 = $0 }
-                            ), format: .number)
-                            .keyboardType(.decimalPad)
-                            .frame(width: 100)
-                        } else {
-                            // Display the item name and price if not in edit mode
-                            Text("\(item.0): $\(item.1, specifier: "%.2f")")
+                                // Editable price
+                                TextField("Price", value: Binding(
+                                    get: { item.1 },
+                                    set: { parsedItems[parsedItems.firstIndex(where: { $0.0 == item.0 })!].1 = $0 }
+                                ), format: .number)
+                                .keyboardType(.decimalPad)
+                                .frame(width: 100)
+                            } else {
+                                // Display the item name and price if not in edit mode
+                                Text("\(item.0): $\(item.1, specifier: "%.2f")")
+                            }
+
+                            // Multi-Select Picker (Who Ordered this item?)
+                            MultiSelectPicker(selectedItems: bindingForItem(item.0), friends: friends)
+                                .frame(width: 150)
                         }
-
-                        // Multi-Select Picker (Who Ordered this item?)
-                        MultiSelectPicker(selectedItems: bindingForItem(item.0), friends: friends)
-                            .frame(width: 150)
+                        .padding(.vertical, 4)
                     }
-                    .padding(.vertical, 4)
                 }
-            }
 
-            // Editable Tax field
-            if isEditing {
-                HStack {
-                    Text("Tax:")
-                    TextField("Tax", value: $taxAmount, format: .currency(code: "USD"))
-                        .keyboardType(.decimalPad)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(width: 100)
-                }
-                .padding()
-
-                // Editable Total field
-                HStack {
-                    Text("Total:")
-                    TextField("Total", value: $totalAmount, format: .currency(code: "USD"))
-                        .keyboardType(.decimalPad)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(width: 100)
-                }
-                .padding()
-            } else {
-                // Display Tax and Total if not in edit mode
-                Text("Tax: $\(taxAmount ?? 0.0, specifier: "%.2f")")
-                    .padding()
-
-                Text("Total: $\(totalAmount ?? 0.0, specifier: "%.2f")")
-                    .padding()
-            }
-
-            // Add Item Button
-            if isEditing {
-                VStack {
+                // Editable Tax field
+                if isEditing {
                     HStack {
-                        TextField("Item Name", text: $newItemName)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .frame(width: 150)
-                        TextField("Price", value: $newItemPrice, format: .number)
+                        Text("Tax:")
+                        TextField("Tax", value: $taxAmount, format: .currency(code: "USD"))
                             .keyboardType(.decimalPad)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .frame(width: 100)
-
-                        MultiSelectPicker(selectedItems: $newItemPerson, friends: friends)
-                            .frame(width: 150)
                     }
-                    .padding(.vertical)
+                    .padding()
 
-                    Button("Add Item") {
-                        addItem()
+                    // Editable Total field
+                    HStack {
+                        Text("Total:")
+                        TextField("Total", value: $totalAmount, format: .currency(code: "USD"))
+                            .keyboardType(.decimalPad)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .frame(width: 100)
                     }
-                    .padding(.top)
+                    .padding()
+                } else {
+                    // Display Tax and Total if not in edit mode
+                    Text("Tax: $\(taxAmount ?? 0.0, specifier: "%.2f")")
+                        .padding()
+
+                    Text("Total: $\(totalAmount ?? 0.0, specifier: "%.2f")")
+                        .padding()
+                }
+
+                // Add Item Button
+                if isEditing {
+                    VStack {
+                        HStack {
+                            TextField("Item Name", text: $newItemName)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .frame(width: 150)
+                            TextField("Price", value: $newItemPrice, format: .number)
+                                .keyboardType(.decimalPad)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .frame(width: 100)
+
+                            MultiSelectPicker(selectedItems: $newItemPerson, friends: friends)
+                                .frame(width: 150)
+                        }
+                        .padding(.vertical)
+
+                        Button("Add Item") {
+                            addItem()
+                        }
+                        .padding(.top)
+                    }
+                }
+
+                // Buttons for editing and finishing
+                HStack {
+                    Button("Edit") {
+                        isEditing.toggle()
+                    }
+                    .padding()
+
+                    Button("Finish") {
+                        calculateAndSaveExpenses()
+                    }
+                    .padding()
+                    .disabled(!isFormComplete() || isSaving)
                 }
             }
-
-            // Buttons for editing and finishing
-            HStack {
-                Button("Edit") {
-                    isEditing.toggle()
-                }
-                .padding()
-
-                Button("Finish") {
-                    calculateAndSaveExpenses()
-                }
-                .padding()
-                .disabled(!isFormComplete() || isSaving)
+            .onAppear {
+                print("Parsed Items in CalculateReceiptView: \(parsedItems)")
             }
-        }
-        .onAppear {
-            print("Parsed Items in CalculateReceiptView: \(parsedItems)")
         }
     }
 
@@ -204,23 +206,49 @@ struct CalculateReceiptView: View {
 }
 
 // Multi-Select Picker for selecting multiple friends for an item
+
 struct MultiSelectPicker: View {
     @Binding var selectedItems: [String]
     var friends: [Friend]
     
+    @State private var isSelecting = false // Flag to trigger the visibility of the list
+    
     var body: some View {
-        List(friends, id: \.id) { friend in
-            HStack {
-                Text(friend.name)
-                Spacer()
-                Image(systemName: selectedItems.contains(friend.name) ? "checkmark.circle.fill" : "circle")
-                    .onTapGesture {
-                        toggleSelection(for: friend.name)
+        VStack {
+            // Show selected friends in a button
+            Button(action: {
+                isSelecting.toggle() // Toggle the visibility of the friend list
+            }) {
+                HStack {
+                    Text(selectedItems.isEmpty ? "Select Friends" : selectedItems.joined(separator: ", "))
+                        .foregroundColor(.blue)
+                        .font(.headline)
+                    Spacer()
+                    Image(systemName: "chevron.down.circle.fill")
+                        .foregroundColor(.blue)
+                }
+            }
+            .padding()
+            .background(Color.gray.opacity(0.1))
+            .cornerRadius(8)
+            
+            // If isSelecting is true, show the list of friends
+            if isSelecting {
+                List(friends, id: \.id) { friend in
+                    HStack {
+                        Text(friend.name)
+                        Spacer()
+                        Image(systemName: selectedItems.contains(friend.name) ? "checkmark.circle.fill" : "circle")
+                            .onTapGesture {
+                                toggleSelection(for: friend.name)
+                            }
                     }
+                    .padding(.vertical, 4)
+                }
+                .frame(height: 200) // Limit the height for the list
             }
         }
-        .frame(height: 100)
-        .listStyle(PlainListStyle())
+        .padding()
     }
     
     private func toggleSelection(for friendName: String) {
