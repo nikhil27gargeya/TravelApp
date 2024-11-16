@@ -18,11 +18,10 @@ struct GroupView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Text("TravBank")
-                    .font(.largeTitle)
-                    .padding()
-                
                 List {
+                    Text("Current Trips")
+                        .font(.title)
+                        .padding()
                     ForEach(groupManager.groups) { group in
                         // Navigation link to ContentView for each group
                         NavigationLink(destination: ContentView(group: group)
@@ -36,28 +35,31 @@ struct GroupView: View {
                         }
                     }
                 }
+                .listStyle(PlainListStyle())
                 
                 // Group actions
                 HStack {
                     Button("Create Group") {
                         isShowingCreateAlert.toggle()
                     }
-                    .buttonStyle(PrimaryButtonStyle())
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.black)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    .padding(.top, 20)
                     
                     Button("Join Group") {
                         isShowingJoinAlert.toggle()
                     }
-                    .buttonStyle(SecondaryButtonStyle())
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.black)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    .padding(.top, 20)
                 }
                 .padding()
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Logout") {
-                        logout()
-                    }
-                    .foregroundColor(.red)
-                }
             }
             .alert("Create New Group", isPresented: $isShowingCreateAlert, actions: {
                 TextField("Group Name", text: $newGroupName)

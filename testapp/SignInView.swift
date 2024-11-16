@@ -33,7 +33,6 @@ struct SignInView: View {
                     RoundedRectangle(cornerRadius: 5)
                         .stroke(Color.gray, lineWidth: 1)
                 )
-                .padding(.horizontal, 10)
 
             // Password SecureField with outlined style
             SecureField("Password", text: $password)
@@ -45,7 +44,6 @@ struct SignInView: View {
                     RoundedRectangle(cornerRadius: 5)
                         .stroke(Color.gray, lineWidth: 1)
                 )
-                .padding(.horizontal, 10)
 
             if let error = errorMessage {
                 Text(error)

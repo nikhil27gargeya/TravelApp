@@ -22,7 +22,7 @@ struct ContentView: View {
     var body: some View {
         VStack {
             TabView {
-                    HomeView(groupId: group.id ?? "default")
+                HomeView(groupId: group.id ?? "default", tripName: group.name ?? "default")
                         .tabItem {
                             Label("Home", systemImage: "house")
                         }

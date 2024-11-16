@@ -29,7 +29,7 @@ struct BalanceView: View {
                                     }
                                 }
                             }
-                            .listStyle(PlainListStyle())
+                            
                         }
                     }
                     .navigationTitle("Balances")
