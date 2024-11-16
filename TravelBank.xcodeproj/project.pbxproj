@@ -92,14 +92,14 @@
 		7DE7CB762CD9FCFA00057217 /* testapp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = testapp.entitlements; sourceTree = "<group>"; };
 		7DE81B132CD1ACBE0087B521 /* BalanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceView.swift; sourceTree = "<group>"; };
 		7DE81B152CD1C4540087B521 /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
-		7DF97C492CD0980500A3B552 /* testapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = testapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7DF97C492CD0980500A3B552 /* TravelBank.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TravelBank.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DF97C4C2CD0980500A3B552 /* testappApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testappApp.swift; sourceTree = "<group>"; };
 		7DF97C4E2CD0980500A3B552 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7DF97C502CD0980500A3B552 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7DF97C532CD0980500A3B552 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		7DF97C592CD0980600A3B552 /* testappTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = testappTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7DF97C592CD0980600A3B552 /* TravelBankTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TravelBankTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DF97C5D2CD0980600A3B552 /* testappTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testappTests.swift; sourceTree = "<group>"; };
-		7DF97C632CD0980600A3B552 /* testappUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = testappUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7DF97C632CD0980600A3B552 /* TravelBankUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TravelBankUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DF97C672CD0980600A3B552 /* testappUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testappUITests.swift; sourceTree = "<group>"; };
 		7DF97C692CD0980600A3B552 /* testappUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testappUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		7DF97C762CD098C900A3B552 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -172,9 +172,9 @@
 		7DF97C4A2CD0980500A3B552 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7DF97C492CD0980500A3B552 /* testapp.app */,
-				7DF97C592CD0980600A3B552 /* testappTests.xctest */,
-				7DF97C632CD0980600A3B552 /* testappUITests.xctest */,
+				7DF97C492CD0980500A3B552 /* TravelBank.app */,
+				7DF97C592CD0980600A3B552 /* TravelBankTests.xctest */,
+				7DF97C632CD0980600A3B552 /* TravelBankUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -236,9 +236,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		7DF97C482CD0980500A3B552 /* testapp */ = {
+		7DF97C482CD0980500A3B552 /* TravelBank */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7DF97C6D2CD0980600A3B552 /* Build configuration list for PBXNativeTarget "testapp" */;
+			buildConfigurationList = 7DF97C6D2CD0980600A3B552 /* Build configuration list for PBXNativeTarget "TravelBank" */;
 			buildPhases = (
 				7DF97C452CD0980500A3B552 /* Sources */,
 				7DF97C462CD0980500A3B552 /* Frameworks */,
@@ -248,7 +248,7 @@
 			);
 			dependencies = (
 			);
-			name = testapp;
+			name = TravelBank;
 			packageProductDependencies = (
 				7DE7CB512CD9842100057217 /* FirebaseAnalytics */,
 				7DE7CB532CD9842100057217 /* FirebaseAuth */,
@@ -260,12 +260,12 @@
 				7DE7CB5F2CD9842100057217 /* FirebaseStorage */,
 			);
 			productName = testapp;
-			productReference = 7DF97C492CD0980500A3B552 /* testapp.app */;
+			productReference = 7DF97C492CD0980500A3B552 /* TravelBank.app */;
 			productType = "com.apple.product-type.application";
 		};
-		7DF97C582CD0980600A3B552 /* testappTests */ = {
+		7DF97C582CD0980600A3B552 /* TravelBankTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7DF97C702CD0980600A3B552 /* Build configuration list for PBXNativeTarget "testappTests" */;
+			buildConfigurationList = 7DF97C702CD0980600A3B552 /* Build configuration list for PBXNativeTarget "TravelBankTests" */;
 			buildPhases = (
 				7DF97C552CD0980600A3B552 /* Sources */,
 				7DF97C562CD0980600A3B552 /* Frameworks */,
@@ -276,14 +276,14 @@
 			dependencies = (
 				7DF97C5B2CD0980600A3B552 /* PBXTargetDependency */,
 			);
-			name = testappTests;
+			name = TravelBankTests;
 			productName = testappTests;
-			productReference = 7DF97C592CD0980600A3B552 /* testappTests.xctest */;
+			productReference = 7DF97C592CD0980600A3B552 /* TravelBankTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		7DF97C622CD0980600A3B552 /* testappUITests */ = {
+		7DF97C622CD0980600A3B552 /* TravelBankUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7DF97C732CD0980600A3B552 /* Build configuration list for PBXNativeTarget "testappUITests" */;
+			buildConfigurationList = 7DF97C732CD0980600A3B552 /* Build configuration list for PBXNativeTarget "TravelBankUITests" */;
 			buildPhases = (
 				7DF97C5F2CD0980600A3B552 /* Sources */,
 				7DF97C602CD0980600A3B552 /* Frameworks */,
@@ -294,9 +294,9 @@
 			dependencies = (
 				7DF97C652CD0980600A3B552 /* PBXTargetDependency */,
 			);
-			name = testappUITests;
+			name = TravelBankUITests;
 			productName = testappUITests;
-			productReference = 7DF97C632CD0980600A3B552 /* testappUITests.xctest */;
+			productReference = 7DF97C632CD0980600A3B552 /* TravelBankUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -322,7 +322,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 7DF97C442CD0980500A3B552 /* Build configuration list for PBXProject "testapp" */;
+			buildConfigurationList = 7DF97C442CD0980500A3B552 /* Build configuration list for PBXProject "TravelBank" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -338,9 +338,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				7DF97C482CD0980500A3B552 /* testapp */,
-				7DF97C582CD0980600A3B552 /* testappTests */,
-				7DF97C622CD0980600A3B552 /* testappUITests */,
+				7DF97C482CD0980500A3B552 /* TravelBank */,
+				7DF97C582CD0980600A3B552 /* TravelBankTests */,
+				7DF97C622CD0980600A3B552 /* TravelBankUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -433,12 +433,12 @@
 /* Begin PBXTargetDependency section */
 		7DF97C5B2CD0980600A3B552 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 7DF97C482CD0980500A3B552 /* testapp */;
+			target = 7DF97C482CD0980500A3B552 /* TravelBank */;
 			targetProxy = 7DF97C5A2CD0980600A3B552 /* PBXContainerItemProxy */;
 		};
 		7DF97C652CD0980600A3B552 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 7DF97C482CD0980500A3B552 /* testapp */;
+			target = 7DF97C482CD0980500A3B552 /* TravelBank */;
 			targetProxy = 7DF97C642CD0980600A3B552 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -585,7 +585,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = NG.TravBank;
+				PRODUCT_BUNDLE_IDENTIFIER = NG.TravelBank;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -621,7 +621,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = NG.TravBank;
+				PRODUCT_BUNDLE_IDENTIFIER = NG.TravelBank;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -646,7 +646,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/testapp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/testapp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TravelBank.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TravelBank";
 			};
 			name = Debug;
 		};
@@ -666,7 +666,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/testapp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/testapp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TravelBank.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TravelBank";
 			};
 			name = Release;
 		};
@@ -709,7 +709,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		7DF97C442CD0980500A3B552 /* Build configuration list for PBXProject "testapp" */ = {
+		7DF97C442CD0980500A3B552 /* Build configuration list for PBXProject "TravelBank" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7DF97C6B2CD0980600A3B552 /* Debug */,
@@ -718,7 +718,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7DF97C6D2CD0980600A3B552 /* Build configuration list for PBXNativeTarget "testapp" */ = {
+		7DF97C6D2CD0980600A3B552 /* Build configuration list for PBXNativeTarget "TravelBank" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7DF97C6E2CD0980600A3B552 /* Debug */,
@@ -727,7 +727,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7DF97C702CD0980600A3B552 /* Build configuration list for PBXNativeTarget "testappTests" */ = {
+		7DF97C702CD0980600A3B552 /* Build configuration list for PBXNativeTarget "TravelBankTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7DF97C712CD0980600A3B552 /* Debug */,
@@ -736,7 +736,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7DF97C732CD0980600A3B552 /* Build configuration list for PBXNativeTarget "testappUITests" */ = {
+		7DF97C732CD0980600A3B552 /* Build configuration list for PBXNativeTarget "TravelBankUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7DF97C742CD0980600A3B552 /* Debug */,
