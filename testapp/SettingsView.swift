@@ -10,7 +10,6 @@ struct SettingsView: View {
     @State private var errorMessage: String?
 
     var body: some View {
-        NavigationStack {
             Form {
                 Section(header: Text("Default Currency")) {
                     Picker("Currency", selection: $selectedCurrency) {
@@ -41,8 +40,6 @@ struct SettingsView: View {
                         .padding()
                 }
             }
-            .navigationTitle("Settings")
-        }
     }
 
     func saveCurrency(_ currency: String) {

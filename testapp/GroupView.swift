@@ -1,7 +1,6 @@
 import SwiftUI
 import FirebaseAuth
 import SwiftUI
-import FirebaseAuth
 
 struct GroupView: View {
     @StateObject private var groupManager: GroupManager
@@ -72,6 +71,7 @@ struct GroupView: View {
                 Button("Cancel", role: .cancel) { }
             })
         }
+        
     }
 
     private func createGroup() {
@@ -92,29 +92,5 @@ struct GroupView: View {
         } catch let signOutError as NSError {
             print("Error signing out: %@", signOutError)
         }
-    }
-}
-
-// MARK: - Button Styles
-
-struct PrimaryButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .padding()
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(8)
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
-    }
-}
-
-struct SecondaryButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .padding()
-            .background(Color.green)
-            .foregroundColor(.white)
-            .cornerRadius(8)
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
     }
 }

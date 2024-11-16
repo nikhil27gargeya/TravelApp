@@ -9,7 +9,6 @@ struct BalanceView: View {
     @State private var isLoading: Bool = true
 
     var body: some View {
-        NavigationStack {
             ZStack {
                 if isLoading {
                     ProgressView("Loading...")
@@ -29,6 +28,7 @@ struct BalanceView: View {
                                     }
                                 }
                             }
+                            .listStyle(PlainListStyle())
                             
                         }
                     }
@@ -46,7 +46,6 @@ struct BalanceView: View {
             .onAppear {
                 loadTransactions()
             }
-        }
     }
 
     private func loadTransactions() {

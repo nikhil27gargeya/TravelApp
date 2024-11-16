@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var totalAmount: Double?
     @State private var taxAmount: Double?
     @State private var isShowingReceiptScanner = false
+    @Environment(\.dismiss) private var dismiss
     
     init(group: Group) {
         self.group = group
@@ -20,44 +21,58 @@ struct ContentView: View {
     }
 
     var body: some View {
-        VStack {
+        NavigationStack {
             TabView {
                 HomeView(groupId: group.id ?? "default", tripName: group.name ?? "default")
-                        .tabItem {
-                            Label("Home", systemImage: "house")
+                    .tabItem {
+                        Label("Home", systemImage: "house")
+                    }
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button(action: {
+                                dismiss()
+                            }) {
+                                HStack {
+                                    Image(systemName: "arrow.left")
+                                    Text("Back")
+                                }
+                            }
                         }
-                    
+                    }
+                    .navigationBarBackButtonHidden(false)  // Hide back button for HomeView only
+                
                 LogView(balanceManager: balanceManager, friendManager: friendManager, transactions: $transactions)
                     .tabItem {
                         Label("Log", systemImage: "list.bullet")
                     }
-                    .navigationBarBackButtonHidden(true)
+                    .navigationBarBackButtonHidden(true)  // Hide back button for LogView
+                
                 BalanceView(balanceManager: balanceManager)
                     .tabItem {
                         Label("Balances", systemImage: "creditcard")
-                        //arrow.left.arrow.right
                     }
-                    .navigationBarBackButtonHidden(true)
+                    .navigationBarBackButtonHidden(true)  // Hide back button for BalanceView
+                
                 GroqView(scannedText: $scannedText,
                          balanceManager: balanceManager,  // Pass balanceManager
                          totalExpense: $totalExpense,    // Pass totalExpense
                          transactions: $transactions,    // Pass transactions
                          friends: $friendManager.friends, // Pass friends from FriendManager
                          friendManager: friendManager)   // Pass friendManager
-                .tabItem {
-                    Label("Scan Receipt", systemImage: "doc.text.viewfinder")
-                }
-                .navigationBarBackButtonHidden(true)
+                    .tabItem {
+                        Label("Scan Receipt", systemImage: "doc.text.viewfinder")
+                    }
+                    .navigationBarBackButtonHidden(true)  // Hide back button for GroqView
+                
                 SettingsView()
                     .tabItem {
                         Label("Settings", systemImage: "gear")
                     }
-                    .navigationBarBackButtonHidden(true)
+                    .navigationBarBackButtonHidden(true)  // Hide back button for SettingsView
             }
             .onAppear {
                 loadTransactions()
             }
-
         }
     }
 

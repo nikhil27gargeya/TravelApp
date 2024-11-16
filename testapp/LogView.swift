@@ -18,7 +18,6 @@ struct LogView: View {
     @Binding var transactions: [UserExpense]
     
     var body: some View {
-        NavigationStack {
             ZStack {
                 VStack {
                     transactionList
@@ -38,7 +37,6 @@ struct LogView: View {
             .onAppear {
                 loadTransactions()
             }
-        }
     }
 
     // MARK: - Views

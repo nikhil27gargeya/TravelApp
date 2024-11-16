@@ -9,28 +9,26 @@ struct HomeView: View {
     var tripName: String
 
     init(groupId: String, tripName: String) {
-           _friendManager = StateObject(wrappedValue: FriendManager(groupId: groupId))
-           self.tripName = tripName  // Initialize the trip name
-       }
+        _friendManager = StateObject(wrappedValue: FriendManager(groupId: groupId))
+        self.tripName = tripName  // Initialize the trip name
+    }
 
     var body: some View {
-        NavigationView {
-            VStack {
-                List {
-                    Text("Members")
-                        .font(.title2)
-                        .fontWeight(.medium)
-                        .padding(.top)
-                        .frame(alignment: .leading)
-                    ForEach(friendManager.friends) { friend in
-                        Text(friend.name)
-                    }
+        VStack {
+            List {
+                Text("Members")
+                    .font(.title2)
+                    .fontWeight(.medium)
+                    .padding(.top)
+                    .frame(alignment: .leading)
+                ForEach(friendManager.friends) { friend in
+                    Text(friend.name)
                 }
-                .listStyle(PlainListStyle())
-                .navigationTitle(tripName)
-                .onAppear {
-                    friendManager.loadFriends()
-                }
+            }
+            .listStyle(PlainListStyle())
+            .navigationTitle(tripName)  // Display the trip name
+            .onAppear {
+                friendManager.loadFriends()
             }
         }
     }
