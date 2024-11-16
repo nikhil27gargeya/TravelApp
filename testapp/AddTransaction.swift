@@ -1,6 +1,5 @@
 import SwiftUI
 import FirebaseFirestore
-import FirebaseFirestoreSwift
 
 struct AddTransactionView: View {
     let groupId: String
@@ -15,7 +14,6 @@ struct AddTransactionView: View {
     @State private var splitType: SplitType = .evenly
     @State private var selectedFriend: Friend?
     @State private var showReceiptScanner = false
-    @State private var navigationPath = [String]() // New state for managing navigation path
     @State private var scannedText: String = ""
     @State private var parsedItems: [(String, Double)] = []
     @State private var tax: Double? = 0.0
@@ -28,7 +26,7 @@ struct AddTransactionView: View {
     }
 
     var body: some View {
-        NavigationStack(path: $navigationPath) {
+        NavigationStack {
             VStack {
                 Form {
                     TextField("Amount", text: $amount)
@@ -89,12 +87,7 @@ struct AddTransactionView: View {
                         isLoading ? AnyView(ProgressView()) : AnyView(EmptyView())
                     )
                 }
-                .navigationTitle("Add Transaction")
-                .onChange(of: amount) { _ in
-                    if splitType == .evenly {
-                        distributeAmountEvenly()
-                    }
-                }
+
                 // Scan Receipt Button
                 Button("Scan Receipt") {
                     showReceiptScanner.toggle()
@@ -103,8 +96,6 @@ struct AddTransactionView: View {
                 .padding()
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(8)
-
-                
             }
             .sheet(isPresented: $showReceiptScanner) {
                 ReceiptScannerView(
@@ -123,12 +114,6 @@ struct AddTransactionView: View {
         formatter.numberStyle = .currency
         formatter.currencyCode = selectedCurrency
         return formatter.string(from: NSNumber(value: amountValue)) ?? ""
-    }
-
-    private func distributeAmountEvenly() {
-        guard let total = Double(amount), friends.count > 0 else { return }
-        let share = total / Double(friends.count)
-        friends = friends.map { Friend(name: $0.name, share: share) }
     }
 
     private func saveTransaction() {
@@ -156,7 +141,7 @@ struct AddTransactionView: View {
             participants: friends.map { $0.name },
             payer: paidBy.name
         )
-        
+
         isLoading = true // Start loading
 
         // Save the new expense to Firestore within the specific group
