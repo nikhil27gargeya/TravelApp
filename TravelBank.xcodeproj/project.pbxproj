@@ -27,11 +27,7 @@
 		7DE7CB5E2CD9842100057217 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7DE7CB5D2CD9842100057217 /* FirebaseFirestoreSwift */; };
 		7DE7CB602CD9842100057217 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 7DE7CB5F2CD9842100057217 /* FirebaseStorage */; };
 		7DE7CB622CD988E100057217 /* FriendManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7CB612CD988E100057217 /* FriendManager.swift */; };
-		7DE7CB632CD988E100057217 /* FriendManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7CB612CD988E100057217 /* FriendManager.swift */; };
-		7DE7CB642CD988E100057217 /* FriendManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7CB612CD988E100057217 /* FriendManager.swift */; };
 		7DE7CB662CD988ED00057217 /* UserExpenseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7CB652CD988ED00057217 /* UserExpenseManager.swift */; };
-		7DE7CB672CD988ED00057217 /* UserExpenseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7CB652CD988ED00057217 /* UserExpenseManager.swift */; };
-		7DE7CB682CD988ED00057217 /* UserExpenseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7CB652CD988ED00057217 /* UserExpenseManager.swift */; };
 		7DE7CB6A2CD9B0B800057217 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7CB692CD9B0B800057217 /* Group.swift */; };
 		7DE7CB6C2CD9B12A00057217 /* GroupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7CB6B2CD9B12A00057217 /* GroupManager.swift */; };
 		7DE7CB6E2CD9B18200057217 /* GroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7CB6D2CD9B18200057217 /* GroupView.swift */; };
@@ -148,15 +144,45 @@
 			children = (
 				7D7861C82CD17EA900A88CE2 /* UserExpense.swift */,
 				7DE7CB692CD9B0B800057217 /* Group.swift */,
-				7DE7CB6B2CD9B12A00057217 /* GroupManager.swift */,
-				7DE7CB652CD988ED00057217 /* UserExpenseManager.swift */,
 				7D54501C2CDAEB7300D39D37 /* OweStatement.swift */,
-				7DE7CB612CD988E100057217 /* FriendManager.swift */,
 				7DF97C892CD160B900A3B552 /* Friend.swift */,
-				7D4045692CD2E0EA00200DFE /* BalanceManager.swift */,
 				7DE81B152CD1C4540087B521 /* TextRecognizer.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		7D98631A2CE92E17002A2BFE /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				7D4045692CD2E0EA00200DFE /* BalanceManager.swift */,
+				7DE7CB612CD988E100057217 /* FriendManager.swift */,
+				7DE7CB6B2CD9B12A00057217 /* GroupManager.swift */,
+				7DE7CB652CD988ED00057217 /* UserExpenseManager.swift */,
+				7D32F3FD2CE41A450099DA4E /* LLMService.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		7D98631B2CE92E1F002A2BFE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				7DF97C4C2CD0980500A3B552 /* testappApp.swift */,
+				7DF97C762CD098C900A3B552 /* HomeView.swift */,
+				7DF97C782CD098CF00A3B552 /* LogView.swift */,
+				7DE81B132CD1ACBE0087B521 /* BalanceView.swift */,
+				7DF97C7C2CD0996900A3B552 /* AddTransaction.swift */,
+				7DE7CB6D2CD9B18200057217 /* GroupView.swift */,
+				7D4045662CD2113900200DFE /* CalculateReceipt.swift */,
+				7D32F3FF2CE41BAF0099DA4E /* GroqView.swift */,
+				7DE7CB722CD9E33000057217 /* SignInView.swift */,
+				7D5450182CDAB5D400D39D37 /* SignUpView.swift */,
+				7DE7CB742CD9E33B00057217 /* MainView.swift */,
+				7DF97C7E2CD099BA00A3B552 /* SettingsView.swift */,
+				7DF97C4E2CD0980500A3B552 /* ContentView.swift */,
+				7D54501A2CDAEB0300D39D37 /* TransactionDetailView.swift */,
+				7DF97C802CD09AEC00A3B552 /* ReceiptScannerView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		7DF97C402CD0980400A3B552 = {
@@ -185,22 +211,8 @@
 				7D32F4012CE426F30099DA4E /* Info.plist */,
 				7DE7CB762CD9FCFA00057217 /* testapp.entitlements */,
 				7D4045682CD2E0DF00200DFE /* Models */,
-				7DF97C4C2CD0980500A3B552 /* testappApp.swift */,
-				7DF97C802CD09AEC00A3B552 /* ReceiptScannerView.swift */,
-				7DF97C762CD098C900A3B552 /* HomeView.swift */,
-				7DF97C782CD098CF00A3B552 /* LogView.swift */,
-				7DE81B132CD1ACBE0087B521 /* BalanceView.swift */,
-				7D54501A2CDAEB0300D39D37 /* TransactionDetailView.swift */,
-				7DF97C7C2CD0996900A3B552 /* AddTransaction.swift */,
-				7DE7CB6D2CD9B18200057217 /* GroupView.swift */,
-				7D4045662CD2113900200DFE /* CalculateReceipt.swift */,
-				7D32F3FD2CE41A450099DA4E /* LLMService.swift */,
-				7D32F3FF2CE41BAF0099DA4E /* GroqView.swift */,
-				7DE7CB722CD9E33000057217 /* SignInView.swift */,
-				7D5450182CDAB5D400D39D37 /* SignUpView.swift */,
-				7DE7CB742CD9E33B00057217 /* MainView.swift */,
-				7DF97C7E2CD099BA00A3B552 /* SettingsView.swift */,
-				7DF97C4E2CD0980500A3B552 /* ContentView.swift */,
+				7D98631A2CE92E17002A2BFE /* Controllers */,
+				7D98631B2CE92E1F002A2BFE /* Views */,
 				7DE7CB4C2CD9823800057217 /* GoogleService-Info.plist */,
 				7DF97C502CD0980500A3B552 /* Assets.xcassets */,
 				7DF97C522CD0980500A3B552 /* Preview Content */,
@@ -412,8 +424,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7DF97C5E2CD0980600A3B552 /* testappTests.swift in Sources */,
-				7DE7CB672CD988ED00057217 /* UserExpenseManager.swift in Sources */,
-				7DE7CB632CD988E100057217 /* FriendManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -422,8 +432,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7DF97C6A2CD0980600A3B552 /* testappUITestsLaunchTests.swift in Sources */,
-				7DE7CB682CD988ED00057217 /* UserExpenseManager.swift in Sources */,
-				7DE7CB642CD988E100057217 /* FriendManager.swift in Sources */,
 				7DF97C682CD0980600A3B552 /* testappUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -572,7 +580,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = testapp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = TravBank;
+				INFOPLIST_KEY_CFBundleDisplayName = TravelBank;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Need camera access to scan receipt for expense tracking";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -608,7 +616,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = testapp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = TravBank;
+				INFOPLIST_KEY_CFBundleDisplayName = TravelBank;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Need camera access to scan receipt for expense tracking";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

@@ -45,7 +45,15 @@ struct ContentView: View {
                 .tabItem {
                     Label("Add Transaction", systemImage: "plus")
                 }
-                
+                GroqView(scannedText: $scannedText,
+                                         balanceManager: balanceManager,  // Pass balanceManager
+                                         totalExpense: $totalExpense,    // Pass totalExpense
+                                         transactions: $transactions,    // Pass transactions
+                                         friends: $friendManager.friends, // Pass friends from FriendManager
+                                         friendManager: friendManager)   // Pass friendManager
+                                .tabItem {
+                                    Label("Scan Receipt", systemImage: "doc.text.viewfinder")
+                                }
                 // Balance View
                 BalanceView(balanceManager: balanceManager)
                     .tabItem {
