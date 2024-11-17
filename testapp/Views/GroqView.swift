@@ -18,9 +18,8 @@ struct GroqView: View {
     @ObservedObject var friendManager: FriendManager
     
     var body: some View {
+        NavigationView {
             VStack {
-                // Display the scanned and formatted receipt text
-                Text("Scan Receipt")
                 // Scan Receipt Button
                 Spacer()
                 Button("Scan Receipt") {
@@ -33,22 +32,22 @@ struct GroqView: View {
                 
                 // Transition to CalculateReceiptView after scanning
                 NavigationLink(destination: CalculateReceiptView(
-                                    groupId: groupId,  // Pass groupId here
-                                    scannedText: $scannedText,
-                                    parsedItems: $parsedItems,  // Pass parsedItems as a Binding
-                                    tipAmount: $total,        // Pass totalAmount as a Binding
-                                    taxAmount: $tax,            // Pass taxAmount as a Binding
-                                    balanceManager: balanceManager,  // Pass balanceManager
-                                    transactions: $transactions,    // Pass transactions
-                                    totalExpense: $totalExpense,    // Pass totalExpense
-                                    friends: $friends         // Pass friends from FriendManager
-                                ), isActive: $showCalculateReceiptView) {
+                    groupId: groupId,  // Pass groupId here
+                    scannedText: $scannedText,
+                    parsedItems: $parsedItems,  // Pass parsedItems as a Binding
+                    tipAmount: $total,        // Pass totalAmount as a Binding
+                    taxAmount: $tax,            // Pass taxAmount as a Binding
+                    balanceManager: balanceManager,  // Pass balanceManager
+                    transactions: $transactions,    // Pass transactions
+                    totalExpense: $totalExpense,    // Pass totalExpense
+                    friends: $friends         // Pass friends from FriendManager
+                ), isActive: $showCalculateReceiptView) {
                     EmptyView()
                 }
-
+                
                 Spacer()
             }
-            .navigationTitle("Receipt Scanner")
+            .navigationTitle("Scan Receipt")
             .sheet(isPresented: $showReceiptScanner) {
                 ReceiptScannerView(
                     scannedText: $scannedText,
@@ -62,6 +61,7 @@ struct GroqView: View {
                     showCalculateReceiptView = true // Trigger the transition to CalculateReceiptView
                 }
             }
+        }
     }
 
     // Function to format the scanned receipt text

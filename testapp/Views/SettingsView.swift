@@ -13,52 +13,54 @@ struct SettingsView: View {
     @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
-        VStack {
-            if isLoggedOut {
-                // Navigate to SignIn view after logout
-                SignInView(onSignIn: {
-                    self.isLoggedOut = false
-                })
-            } else {
-                Form {
-                    Section(header: Text("Default Currency")) {
-                        Picker("Currency", selection: $selectedCurrency) {
-                            ForEach(currencies, id: \.self) { currency in
-                                Text(currency)
+        NavigationView {
+            VStack {
+                if isLoggedOut {
+                    // Navigate to SignIn view after logout
+                    SignInView(onSignIn: {
+                        self.isLoggedOut = false
+                    })
+                } else {
+                    Form {
+                        Section(header: Text("Default Currency")) {
+                            Picker("Currency", selection: $selectedCurrency) {
+                                ForEach(currencies, id: \.self) { currency in
+                                    Text(currency)
+                                }
+                            }
+                            .pickerStyle(MenuPickerStyle())
+                            .onChange(of: selectedCurrency) { newValue in
+                                saveCurrency(newValue)
                             }
                         }
-                        .pickerStyle(MenuPickerStyle())
-                        .onChange(of: selectedCurrency) { newValue in
-                            saveCurrency(newValue)
-                        }
-                    }
-
-                    Section(header: Text("User Information")) {
-                        TextField("Name", text: $userName)
-                            .onAppear {
-                                loadUserName()
+                        
+                        Section(header: Text("User Information")) {
+                            TextField("Name", text: $userName)
+                                .onAppear {
+                                    loadUserName()
+                                }
+                            
+                            Button("Save Name") {
+                                saveUserName()
                             }
-
-                        Button("Save Name") {
-                            saveUserName()
                         }
-                    }
-
-                    if let error = errorMessage {
-                        Text(error)
+                        
+                        if let error = errorMessage {
+                            Text(error)
+                                .foregroundColor(.red)
+                                .padding()
+                        }
+                        
+                        // Logout Button
+                        Section {
+                            Button("Logout") {
+                                logout()
+                            }
                             .foregroundColor(.red)
-                            .padding()
-                    }
-
-                    // Logout Button
-                    Section {
-                        Button("Logout") {
-                            logout()
                         }
-                        .foregroundColor(.red)
                     }
+                    .navigationTitle("Settings")
                 }
-                .navigationTitle("Settings")
             }
         }
     }

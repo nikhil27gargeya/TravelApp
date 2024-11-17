@@ -27,7 +27,7 @@ struct AddTransactionView: View {
     }
 
     var body: some View {
-            NavigationStack {
+            NavigationView {
                 VStack {
                     Form {
                         // Amount field with rounded borders
@@ -122,7 +122,6 @@ struct AddTransactionView: View {
                     .padding()
                 }
                 .navigationTitle("Add Transaction")
-                .navigationBarTitleDisplayMode(.inline)
             }
         }
 

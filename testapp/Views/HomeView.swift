@@ -36,9 +36,6 @@ struct HomeView: View {
                 .onAppear {
                     friendManager.loadFriends()
                 }
-                
-                Divider()
-                
                 // Balance Section
                 Text("Balances")
                     .font(.title2)
@@ -73,9 +70,9 @@ struct HomeView: View {
                         presentationMode.wrappedValue.dismiss()
                     }) {
                         HStack {
-                            Image(systemName: "house.fill")
+                            Image(systemName: "airplane")
                                 .foregroundColor(.blue)
-                            Text("Home")
+                            Text("Trips")
                                 .foregroundColor(.blue)
                         }
                     }

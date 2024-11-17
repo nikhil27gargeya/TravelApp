@@ -18,15 +18,17 @@ struct LogView: View {
     @Binding var transactions: [UserExpense]
     
     var body: some View {
+        NavigationView{
             ZStack {
                 VStack {
                     transactionList
                 }
             }
-            .navigationTitle("Expense Log")
+            .navigationTitle("Log")
             .onAppear {
                 loadTransactions()
             }
+        }
     }
 
     // MARK: - Views
