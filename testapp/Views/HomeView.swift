@@ -70,7 +70,7 @@ struct HomeView: View {
                         presentationMode.wrappedValue.dismiss()
                     }) {
                         HStack {
-                            Image(systemName: "airplane")
+                            Image(systemName: "paperplane.fill")
                                 .foregroundColor(.blue)
                             Text("Trips")
                                 .foregroundColor(.blue)
