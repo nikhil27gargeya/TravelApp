@@ -18,17 +18,25 @@ struct LogView: View {
     @Binding var transactions: [UserExpense]
     
     var body: some View {
-        NavigationView{
-            ZStack {
-                VStack {
-                    transactionList
+        NavigationView {
+                    ZStack {
+                        VStack {
+                            // Show "No transactions logged yet" if there are no transactions
+                            if transactions.isEmpty {
+                                Text("Logged transactions will appear here!")
+                                    .font(.title3)
+                                    .foregroundColor(.gray)
+                                    .padding()
+                            } else {
+                                transactionList
+                            }
+                        }
+                    }
+                    .navigationTitle("Log")
+                    .onAppear {
+                        loadTransactions()
+                    }
                 }
-            }
-            .navigationTitle("Log")
-            .onAppear {
-                loadTransactions()
-            }
-        }
     }
 
     // MARK: - Views
