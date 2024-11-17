@@ -2,7 +2,7 @@ import SwiftUI
 import FirebaseFirestore
 
 struct GroqView: View {
-    let groupId: String  // Ensure that groupId is passed to GroqView
+    let groupId: String
     @State private var aiOutput: String = ""
     @State private var isLoading: Bool = false
     @Binding var scannedText: String
@@ -20,17 +20,27 @@ struct GroqView: View {
     var body: some View {
         NavigationView {
             VStack {
+                // Other content or views, if any, can go here.
+                Text("Automatic bill calculation")
+                    .font(.title3)
+                    .foregroundColor(.gray)
+                    .padding(.top, 10)
+                    .padding(.leading, 16)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                                
+                Spacer() // Pushes the "Scan Receipt" button to the bottom
+
                 // Scan Receipt Button
-                Spacer()
                 Button("Scan Receipt") {
                     showReceiptScanner.toggle()
                 }
-                .foregroundColor(.black)
+                .foregroundColor(.white)
                 .padding()
-                .background(Color.gray.opacity(0.2))
+                .background(Color.black)
                 .cornerRadius(8)
-                
-                // Transition to CalculateReceiptView after scanning
+                .padding(.bottom, 20) // Optional: Adds space between button and bottom edge of screen
+
+                // NavigationLink for CalculateReceiptView
                 NavigationLink(destination: CalculateReceiptView(
                     groupId: groupId,  // Pass groupId here
                     scannedText: $scannedText,
@@ -45,7 +55,6 @@ struct GroqView: View {
                     EmptyView()
                 }
                 
-                Spacer()
             }
             .navigationTitle("Scan Receipt")
             .sheet(isPresented: $showReceiptScanner) {

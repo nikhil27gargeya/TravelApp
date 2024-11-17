@@ -17,9 +17,10 @@ struct GroupView: View {
     var body: some View {
             VStack {
                 List {
-                    Text("Current Trips")
+                    Text("Trips")
                         .font(.title)
                         .padding()
+                        .frame(alignment: .leading)
                     ForEach(groupManager.groups) { group in
                         // Navigation link to ContentView for each group
                         NavigationLink(destination: ContentView(group: group)

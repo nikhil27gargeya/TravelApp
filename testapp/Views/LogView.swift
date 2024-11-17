@@ -19,24 +19,22 @@ struct LogView: View {
     
     var body: some View {
         NavigationView {
-                    ZStack {
-                        VStack {
-                            // Show "No transactions logged yet" if there are no transactions
-                            if transactions.isEmpty {
-                                Text("Logged transactions will appear here!")
-                                    .font(.title3)
-                                    .foregroundColor(.gray)
-                                    .padding()
-                            } else {
-                                transactionList
-                            }
-                        }
-                    }
-                    .navigationTitle("Log")
-                    .onAppear {
-                        loadTransactions()
-                    }
+            VStack {
+                // Show "No transactions logged yet" if there are no transactions
+                if transactions.isEmpty {
+                    Text("Logged transactions will appear here!")
+                        .font(.title3)
+                        .foregroundColor(.gray)
+                        .padding()
+                } else {
+                    transactionList
                 }
+            }
+            .navigationTitle("Log")
+            .onAppear {
+                loadTransactions()
+            }
+        }
     }
 
     // MARK: - Views

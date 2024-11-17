@@ -107,7 +107,7 @@ struct AddTransactionView: View {
                             saveTransaction()
                         }
                         .padding()
-                        .background(Color.blue)
+                        .background(Color.black)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                         .padding(.top, 10)
@@ -117,7 +117,6 @@ struct AddTransactionView: View {
                     }
                     .background(Color.white) // Set a background for the entire form
                     .cornerRadius(12)
-                    .shadow(radius: 5) // Add a subtle shadow for better visual hierarchy
                     .padding()
                 }
                 .navigationTitle("Add Transaction")
