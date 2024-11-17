@@ -22,11 +22,15 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             TabView {
-                // Home Tab
-                HomeView(groupId: group.id ?? "default", tripName: group.name ?? "default")
-                    .tabItem {
-                        Label("Home", systemImage: "house")
-                    }
+                // Home Tab (combined with Balance)
+                HomeView(
+                    groupId: group.id ?? "default",
+                    tripName: group.name ?? "default",
+                    balanceManager: balanceManager
+                )
+                .tabItem {
+                    Label("Home", systemImage: "house")
+                }
                 
                 // Log Tab
                 LogView(balanceManager: balanceManager, friendManager: friendManager, transactions: $transactions)
@@ -59,12 +63,6 @@ struct ContentView: View {
                 .tabItem {
                     Label("Scan Receipt", systemImage: "doc.text.viewfinder")
                 }
-
-                // Balance View Tab
-                BalanceView(balanceManager: balanceManager)
-                    .tabItem {
-                        Label("Balances", systemImage: "creditcard")
-                    }
                 
                 // Settings View Tab
                 SettingsView()
