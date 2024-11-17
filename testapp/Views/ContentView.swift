@@ -22,19 +22,19 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             TabView {
-                // Home Tab (No "Add Transaction" button here anymore)
+                // Home Tab
                 HomeView(groupId: group.id ?? "default", tripName: group.name ?? "default")
                     .tabItem {
                         Label("Home", systemImage: "house")
                     }
                 
-                // Log Tab (Just lists transactions, no Add Transaction button here anymore)
+                // Log Tab
                 LogView(balanceManager: balanceManager, friendManager: friendManager, transactions: $transactions)
                     .tabItem {
                         Label("Log", systemImage: "list.bullet")
                     }
 
-                // Add Transaction Tab (New tab with button to add transactions)
+                // Add Transaction Tab
                 AddTransactionView(
                     groupId: group.id ?? "default",
                     totalExpense: $totalExpense,
@@ -45,22 +45,28 @@ struct ContentView: View {
                 .tabItem {
                     Label("Add Transaction", systemImage: "plus")
                 }
-                GroqView(scannedText: $scannedText,
-                                         balanceManager: balanceManager,  // Pass balanceManager
-                                         totalExpense: $totalExpense,    // Pass totalExpense
-                                         transactions: $transactions,    // Pass transactions
-                                         friends: $friendManager.friends, // Pass friends from FriendManager
-                                         friendManager: friendManager)   // Pass friendManager
-                                .tabItem {
-                                    Label("Scan Receipt", systemImage: "doc.text.viewfinder")
-                                }
-                // Balance View
+
+                // Scan Receipt Tab
+                GroqView(
+                    groupId: group.id ?? "default",  // Pass groupId here
+                    scannedText: $scannedText,
+                    balanceManager: balanceManager,  // Pass balanceManager
+                    totalExpense: $totalExpense,    // Pass totalExpense
+                    transactions: $transactions,    // Pass transactions
+                    friends: $friendManager.friends, // Pass friends from FriendManager
+                    friendManager: friendManager   // Pass friendManager
+                )
+                .tabItem {
+                    Label("Scan Receipt", systemImage: "doc.text.viewfinder")
+                }
+
+                // Balance View Tab
                 BalanceView(balanceManager: balanceManager)
                     .tabItem {
                         Label("Balances", systemImage: "creditcard")
                     }
                 
-                // Settings View
+                // Settings View Tab
                 SettingsView()
                     .tabItem {
                         Label("Settings", systemImage: "gear")

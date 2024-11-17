@@ -1,9 +1,11 @@
 import SwiftUI
+import FirebaseFirestore
 
 struct CalculateReceiptView: View {
+    let groupId: String
     @Binding var scannedText: String
     @Binding var parsedItems: [(String, Double)]  // Pass parsedItems as a Binding
-    @Binding var totalAmount: Double?
+    @Binding var tipAmount: Double?
     @Binding var taxAmount: Double?
     @ObservedObject var balanceManager: BalanceManager
     @Binding var transactions: [UserExpense]
@@ -17,23 +19,40 @@ struct CalculateReceiptView: View {
     @State private var newItemName: String = ""
     @State private var newItemPrice: Double = 0.0
     @State private var newItemPerson: [String] = [] // To allow multiple selections
+    @State private var isLoading: Bool = false
     
     var body: some View {
         ScrollView { // Make the entire view scrollable
             VStack {
-                // Payer Picker (who paid the bill)
-                Picker("Who Paid?", selection: $selectedPayer) {
-                    ForEach(friends, id: \.id) { friend in
-                        Text(friend.name).tag(friend.name as String?)
+                Text("Divide Bill")
+                    .font(.title2)
+                                    .fontWeight(.bold)
+                                    .padding(.top)
+                                
+                                Text("Select who paid for the expense and select which items were purchased by whom.")
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                                    .padding(.bottom, 10)
+                                
+                                // Payer Picker (who paid the bill) with a title
+                HStack {
+                    Text("Who Paid?")
+                        .font(.headline)
+                        .foregroundColor(.blue)
+                    
+                    Picker("Who Paid?", selection: $selectedPayer) {
+                        ForEach(friends, id: \.id) { friend in
+                            Text(friend.name).tag(friend.name as String?)
+                        }
                     }
+                    .pickerStyle(MenuPickerStyle())
+                    .frame(width: 200)
+                    .padding(.vertical, 8)
                 }
-                .pickerStyle(MenuPickerStyle())
-                .frame(width: 200)
-                .padding(.vertical, 8)
 
-                // Show the items, prices, tax, and total
+                // Show the items, prices, tax, and tip
                 if parsedItems.isEmpty {
-                    Text("No items available.")
+                    Text("Loading Items...")
                         .padding()
                 } else {
                     // Items Picker for each parsed item
@@ -61,8 +80,10 @@ struct CalculateReceiptView: View {
                             }
 
                             // Multi-Select Picker (Who Ordered this item?)
-                            MultiSelectPicker(selectedItems: bindingForItem(item.0), friends: friends)
-                                .frame(width: 150)
+                            if !isEditing {
+                                MultiSelectPicker(selectedItems: bindingForItem(item.0), friends: friends)
+                                    .frame(width: 150)
+                            }
                         }
                         .padding(.vertical, 4)
                     }
@@ -79,25 +100,25 @@ struct CalculateReceiptView: View {
                     }
                     .padding()
 
-                    // Editable Total field
+                    // Editable Tip field (formerly "Total")
                     HStack {
-                        Text("Total:")
-                        TextField("Total", value: $totalAmount, format: .currency(code: "USD"))
+                        Text("Tip:")
+                        TextField("Tip", value: $tipAmount, format: .currency(code: "USD"))
                             .keyboardType(.decimalPad)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .frame(width: 100)
                     }
                     .padding()
                 } else {
-                    // Display Tax and Total if not in edit mode
+                    // Display Tax and Tip if not in edit mode
                     Text("Tax: $\(taxAmount ?? 0.0, specifier: "%.2f")")
                         .padding()
 
-                    Text("Total: $\(totalAmount ?? 0.0, specifier: "%.2f")")
+                    Text("Tip: $\(tipAmount ?? 0.0, specifier: "%.2f")")
                         .padding()
                 }
 
-                // Add Item Button
+                // Add Item Button (only visible when editing)
                 if isEditing {
                     VStack {
                         HStack {
@@ -108,11 +129,11 @@ struct CalculateReceiptView: View {
                                 .keyboardType(.decimalPad)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .frame(width: 100)
-
-                            MultiSelectPicker(selectedItems: $newItemPerson, friends: friends)
-                                .frame(width: 150)
                         }
                         .padding(.vertical)
+
+                        MultiSelectPicker(selectedItems: $newItemPerson, friends: friends)
+                            .frame(width: 150)
 
                         Button("Add Item") {
                             addItem()
@@ -123,8 +144,12 @@ struct CalculateReceiptView: View {
 
                 // Buttons for editing and finishing
                 HStack {
-                    Button("Edit") {
-                        isEditing.toggle()
+                    Button(isEditing ? "Save" : "Edit") {
+                        if isEditing {
+                            saveChanges()
+                        } else {
+                            isEditing.toggle()
+                        }
                     }
                     .padding()
 
@@ -159,6 +184,13 @@ struct CalculateReceiptView: View {
         newItemPerson = []
     }
 
+    // Save changes to item details
+    private func saveChanges() {
+        // Here you can apply logic to save the changes and update the parsedItems
+        // If you want to update all the fields, you can loop through `parsedItems` and apply necessary changes.
+        isEditing.toggle() // Toggle off the editing mode
+    }
+
     // Calculate and save expenses
     private func calculateAndSaveExpenses() {
         guard let payer = selectedPayer else {
@@ -191,10 +223,53 @@ struct CalculateReceiptView: View {
 
     // Save transaction to Firestore
     private func saveTransaction(expensesPerPerson: [String: Double], payer: String) {
-        // Implement Firestore saving logic here
-        print("Saving transaction: \(expensesPerPerson), payer: \(payer)")
-        // After saving, update the UI accordingly (e.g., updating transactions, expenses, etc.)
+        guard let tipAmount = tipAmount else {
+            print("Error: No total amount selected.")
+            return
+        }
+
+        // Create a new transaction object
+        let newExpense = UserExpense(
+            amount: 0,  // Ensure the totalAmount is passed correctly
+            date: Date(),
+            description: nil,
+            splitDetails: expensesPerPerson,
+            participants: Array(expensesPerPerson.keys),  // Participants who have split the expense
+            payer: payer  // The person who paid
+        )
+
+        isLoading = true // Start loading
+
+        // Save the new expense to Firestore within the specific group
+        let db = Firestore.firestore()
+        do {
+            let documentId = newExpense.id.uuidString // Set document ID to UUID
+            try db.collection("groups")
+                .document(groupId)
+                .collection("transactions")
+                .document(documentId)
+                .setData(from: newExpense) { error in
+                    if let error = error {
+                        print("Error saving transaction: \(error)")
+                    } else {
+                        print("Transaction saved successfully!")
+                        // Update UI after saving the transaction
+                        DispatchQueue.main.async {
+                            transactions.append(newExpense)  // Add the transaction to the local list
+                            totalExpense += newExpense.amount  // Update the total expense
+                            balanceManager.updateBalances(with: expensesPerPerson, payer: payer)  // Update balances
+                        }
+                    }
+                    isLoading = false  // End loading
+                }
+        } catch {
+            print("Error encoding transaction: \(error)")
+            isLoading = false
+        }
     }
+
+
+
 
     // Helper function to create a binding for each item
     private func bindingForItem(_ itemName: String) -> Binding<[String]> {
@@ -204,6 +279,9 @@ struct CalculateReceiptView: View {
         )
     }
 }
+
+
+
 
 // Multi-Select Picker for selecting multiple friends for an item
 

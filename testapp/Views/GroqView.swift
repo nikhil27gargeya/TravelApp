@@ -1,7 +1,9 @@
 import SwiftUI
+import FirebaseFirestore
 
 struct GroqView: View {
-    @State private var aiOutput: String = "Scanned text will appear here."
+    let groupId: String  // Ensure that groupId is passed to GroqView
+    @State private var aiOutput: String = ""
     @State private var isLoading: Bool = false
     @Binding var scannedText: String
     @State private var showReceiptScanner = false
@@ -18,28 +20,28 @@ struct GroqView: View {
     var body: some View {
             VStack {
                 // Display the scanned and formatted receipt text
-                Text(aiOutput)
-                    .padding()
-                
+                Text("Scan Receipt")
                 // Scan Receipt Button
+                Spacer()
                 Button("Scan Receipt") {
                     showReceiptScanner.toggle()
                 }
-                .foregroundColor(.green)
+                .foregroundColor(.black)
                 .padding()
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(8)
                 
                 // Transition to CalculateReceiptView after scanning
                 NavigationLink(destination: CalculateReceiptView(
+                                    groupId: groupId,  // Pass groupId here
                                     scannedText: $scannedText,
                                     parsedItems: $parsedItems,  // Pass parsedItems as a Binding
-                                    totalAmount: $total,        // Pass totalAmount as a Binding
+                                    tipAmount: $total,        // Pass totalAmount as a Binding
                                     taxAmount: $tax,            // Pass taxAmount as a Binding
                                     balanceManager: balanceManager,  // Pass balanceManager
                                     transactions: $transactions,    // Pass transactions
                                     totalExpense: $totalExpense,    // Pass totalExpense
-                                    friends: $friends           // Pass friends from FriendManager
+                                    friends: $friends         // Pass friends from FriendManager
                                 ), isActive: $showCalculateReceiptView) {
                     EmptyView()
                 }
@@ -132,5 +134,4 @@ struct GroqView: View {
         // Debug output to check parsed data
         print("Parsed Items: \(parsedItems)")
     }
-
 }
