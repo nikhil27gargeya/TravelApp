@@ -15,7 +15,6 @@ struct GroupView: View {
     }
 
     var body: some View {
-        NavigationStack {
             VStack {
                 List {
                     Text("Current Trips")
@@ -24,6 +23,7 @@ struct GroupView: View {
                     ForEach(groupManager.groups) { group in
                         // Navigation link to ContentView for each group
                         NavigationLink(destination: ContentView(group: group)
+                            .navigationBarBackButtonHidden(true)
                         ) {
                             VStack(alignment: .leading) {
                                 Text(group.name)
@@ -70,7 +70,6 @@ struct GroupView: View {
                 Button("Join", action: joinGroup)
                 Button("Cancel", role: .cancel) { }
             })
-        }
         
     }
 

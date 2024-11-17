@@ -11,56 +11,58 @@ struct SignUpView: View {
     var onSignUp: (() -> Void)?
 
     var body: some View {
-        VStack {
-            Text("Create an Account")
-                .font(.title)
-                .fontWeight(.bold)
-                .padding()
-
-            TextField("Name", text: $userName)
-                .padding()
-                .cornerRadius(5)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 5)
-                        .stroke(Color.gray, lineWidth: 1)
-                )
-                
-            TextField("Email", text: $email)
-                .padding()
-                .keyboardType(.emailAddress)
-                .autocapitalization(.none)
-                .cornerRadius(5)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 5)
-                        .stroke(Color.gray, lineWidth: 1)
-                )
-
-            SecureField("Password", text: $password)
-                .padding()
-                .cornerRadius(5)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 5)
-                        .stroke(Color.gray, lineWidth: 1)
-                )
-
-            if let error = errorMessage {
-                Text(error)
-                    .foregroundColor(.red)
+        NavigationStack {
+            VStack {
+                Text("Create an Account")
+                    .font(.title)
+                    .fontWeight(.bold)
                     .padding()
-            }
-            Spacer()
-
-            Button("Sign Up") {
-                signUp()
+                
+                TextField("Name", text: $userName)
+                    .padding()
+                    .cornerRadius(5)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
+                
+                TextField("Email", text: $email)
+                    .padding()
+                    .keyboardType(.emailAddress)
+                    .autocapitalization(.none)
+                    .cornerRadius(5)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
+                
+                SecureField("Password", text: $password)
+                    .padding()
+                    .cornerRadius(5)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
+                
+                if let error = errorMessage {
+                    Text(error)
+                        .foregroundColor(.red)
+                        .padding()
+                }
+                Spacer()
+                
+                Button("Sign Up") {
+                    signUp()
+                }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Color.black)
+                .foregroundColor(.white)
+                .cornerRadius(8)
+                .padding(.top, 20)
             }
             .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color.black)
-            .foregroundColor(.white)
-            .cornerRadius(8)
-            .padding(.top, 20)
         }
-        .padding()
     }
 
     private func signUp() {

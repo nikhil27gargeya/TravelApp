@@ -33,7 +33,6 @@
 		7DE7CB6E2CD9B18200057217 /* GroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7CB6D2CD9B18200057217 /* GroupView.swift */; };
 		7DE7CB732CD9E33000057217 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7CB722CD9E33000057217 /* SignInView.swift */; };
 		7DE7CB752CD9E33B00057217 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7CB742CD9E33B00057217 /* MainView.swift */; };
-		7DE81B142CD1ACBE0087B521 /* BalanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE81B132CD1ACBE0087B521 /* BalanceView.swift */; };
 		7DE81B162CD1C4540087B521 /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE81B152CD1C4540087B521 /* TextRecognizer.swift */; };
 		7DF97C4D2CD0980500A3B552 /* testappApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF97C4C2CD0980500A3B552 /* testappApp.swift */; };
 		7DF97C4F2CD0980500A3B552 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DF97C4E2CD0980500A3B552 /* ContentView.swift */; };
@@ -86,7 +85,6 @@
 		7DE7CB722CD9E33000057217 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		7DE7CB742CD9E33B00057217 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		7DE7CB762CD9FCFA00057217 /* testapp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = testapp.entitlements; sourceTree = "<group>"; };
-		7DE81B132CD1ACBE0087B521 /* BalanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceView.swift; sourceTree = "<group>"; };
 		7DE81B152CD1C4540087B521 /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
 		7DF97C492CD0980500A3B552 /* TravelBank.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TravelBank.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DF97C4C2CD0980500A3B552 /* testappApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testappApp.swift; sourceTree = "<group>"; };
@@ -166,13 +164,12 @@
 		7D98631B2CE92E1F002A2BFE /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				7D4045662CD2113900200DFE /* CalculateReceipt.swift */,
 				7DF97C4C2CD0980500A3B552 /* testappApp.swift */,
 				7DF97C762CD098C900A3B552 /* HomeView.swift */,
 				7DF97C782CD098CF00A3B552 /* LogView.swift */,
-				7DE81B132CD1ACBE0087B521 /* BalanceView.swift */,
 				7DF97C7C2CD0996900A3B552 /* AddTransaction.swift */,
 				7DE7CB6D2CD9B18200057217 /* GroupView.swift */,
-				7D4045662CD2113900200DFE /* CalculateReceipt.swift */,
 				7D32F3FF2CE41BAF0099DA4E /* GroqView.swift */,
 				7DE7CB722CD9E33000057217 /* SignInView.swift */,
 				7D5450182CDAB5D400D39D37 /* SignUpView.swift */,
@@ -411,7 +408,6 @@
 				7D5450192CDAB5D400D39D37 /* SignUpView.swift in Sources */,
 				7D32F3FE2CE41A450099DA4E /* LLMService.swift in Sources */,
 				7DF97C4D2CD0980500A3B552 /* testappApp.swift in Sources */,
-				7DE81B142CD1ACBE0087B521 /* BalanceView.swift in Sources */,
 				7D54501B2CDAEB0300D39D37 /* TransactionDetailView.swift in Sources */,
 				7DF97C8A2CD160B900A3B552 /* Friend.swift in Sources */,
 				7DE7CB6E2CD9B18200057217 /* GroupView.swift in Sources */,

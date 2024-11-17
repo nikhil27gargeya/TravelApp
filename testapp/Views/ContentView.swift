@@ -12,7 +12,7 @@ struct ContentView: View {
     @State private var totalAmount: Double?
     @State private var taxAmount: Double?
     @State private var isShowingReceiptScanner = false
-    
+
     init(group: Group) {
         self.group = group
         _friendManager = StateObject(wrappedValue: FriendManager(groupId: group.id ?? ""))
@@ -20,7 +20,6 @@ struct ContentView: View {
     }
 
     var body: some View {
-        NavigationStack {
             TabView {
                 // Home Tab (combined with Balance)
                 HomeView(
@@ -63,7 +62,7 @@ struct ContentView: View {
                 .tabItem {
                     Label("Scan Receipt", systemImage: "doc.text.viewfinder")
                 }
-                
+
                 // Settings View Tab
                 SettingsView()
                     .tabItem {
@@ -73,7 +72,6 @@ struct ContentView: View {
             .onAppear {
                 loadTransactions()
             }
-        }
     }
 
     private func loadTransactions() {
@@ -81,7 +79,7 @@ struct ContentView: View {
             print("Error: Group ID is missing")
             return
         }
-        
+
         let db = Firestore.firestore()
         db.collection("groups").document(groupId).collection("transactions").getDocuments { snapshot, error in
             if let error = error {
