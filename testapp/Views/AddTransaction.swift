@@ -30,7 +30,6 @@ struct AddTransactionView: View {
             NavigationView {
                 VStack {
                     Form {
-                        // Amount field with rounded borders
                         TextField("Amount", text: $amount)
                             .keyboardType(.decimalPad)
                             .padding()

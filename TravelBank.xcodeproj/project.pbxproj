@@ -15,6 +15,7 @@
 		7D54501B2CDAEB0300D39D37 /* TransactionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D54501A2CDAEB0300D39D37 /* TransactionDetailView.swift */; };
 		7D54501D2CDAEB7300D39D37 /* OweStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D54501C2CDAEB7300D39D37 /* OweStatement.swift */; };
 		7D7861C92CD17EA900A88CE2 /* UserExpense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D7861C82CD17EA900A88CE2 /* UserExpense.swift */; };
+		7D98631E2CEAA5B9002A2BFE /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D98631D2CEAA5B9002A2BFE /* TextField.swift */; };
 		7DE7CB4D2CD9823800057217 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7CB4C2CD9823800057217 /* GoogleService-Info.plist */; };
 		7DE7CB4E2CD9823800057217 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7CB4C2CD9823800057217 /* GoogleService-Info.plist */; };
 		7DE7CB4F2CD9823800057217 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7CB4C2CD9823800057217 /* GoogleService-Info.plist */; };
@@ -76,6 +77,7 @@
 		7D54501A2CDAEB0300D39D37 /* TransactionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailView.swift; sourceTree = "<group>"; };
 		7D54501C2CDAEB7300D39D37 /* OweStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OweStatement.swift; sourceTree = "<group>"; };
 		7D7861C82CD17EA900A88CE2 /* UserExpense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserExpense.swift; sourceTree = "<group>"; };
+		7D98631D2CEAA5B9002A2BFE /* TextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextField.swift; sourceTree = "<group>"; };
 		7DE7CB4C2CD9823800057217 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7DE7CB612CD988E100057217 /* FriendManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendManager.swift; sourceTree = "<group>"; };
 		7DE7CB652CD988ED00057217 /* UserExpenseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserExpenseManager.swift; sourceTree = "<group>"; };
@@ -182,6 +184,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		7D98631C2CEA9FCB002A2BFE /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				7D98631D2CEAA5B9002A2BFE /* TextField.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		7DF97C402CD0980400A3B552 = {
 			isa = PBXGroup;
 			children = (
@@ -207,6 +217,7 @@
 			children = (
 				7D32F4012CE426F30099DA4E /* Info.plist */,
 				7DE7CB762CD9FCFA00057217 /* testapp.entitlements */,
+				7D98631C2CEA9FCB002A2BFE /* Components */,
 				7D4045682CD2E0DF00200DFE /* Models */,
 				7D98631A2CE92E17002A2BFE /* Controllers */,
 				7D98631B2CE92E1F002A2BFE /* Views */,
@@ -406,6 +417,7 @@
 				7DE7CB622CD988E100057217 /* FriendManager.swift in Sources */,
 				7DE7CB732CD9E33000057217 /* SignInView.swift in Sources */,
 				7D5450192CDAB5D400D39D37 /* SignUpView.swift in Sources */,
+				7D98631E2CEAA5B9002A2BFE /* TextField.swift in Sources */,
 				7D32F3FE2CE41A450099DA4E /* LLMService.swift in Sources */,
 				7DF97C4D2CD0980500A3B552 /* testappApp.swift in Sources */,
 				7D54501B2CDAEB0300D39D37 /* TransactionDetailView.swift in Sources */,

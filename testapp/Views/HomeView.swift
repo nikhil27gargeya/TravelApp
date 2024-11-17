@@ -27,27 +27,20 @@ struct HomeView: View {
                         .fontWeight(.medium)
                         .padding(.top)
                         .frame(alignment: .leading)
+                    
                     ForEach(friendManager.friends) { friend in
                         Text(friend.name)
                     }
-                }
-                .listStyle(PlainListStyle())
-                .navigationTitle(tripName)  // Display the trip name
-                .onAppear {
-                    friendManager.loadFriends()
-                }
-                // Balance Section
-                Text("Balances")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .padding(.top)
-                
-                let all = balanceManager.owedStatements
-                if all.isEmpty {
-                    Text("No outstanding debts.")
-                        .foregroundColor(.gray)
-                } else {
-                    List {
+                    Spacer()
+                    Text("Balances")
+                        .font(.title2)
+                        .fontWeight(.medium)
+                        .frame(alignment: .leading)  // Left align Balances title
+                    let all = balanceManager.owedStatements
+                    if all.isEmpty {
+                        Text("No outstanding debts.")
+                            .foregroundColor(.gray)
+                    } else {
                         Section(header: Text("Who Owes Who")) {
                             ForEach(all, id: \.self) { statement in
                                 NavigationLink(destination: TransactionDetailView(statement: statement, transactions: transactions)) {
@@ -55,12 +48,16 @@ struct HomeView: View {
                                 }
                             }
                         }
+                        .onAppear {
+                            loadTransactions() // Fetch transactions when the view appears
+                        }
                     }
-                    .listStyle(PlainListStyle())
                 }
-            }
-            .onAppear {
-                loadTransactions() // Fetch transactions when the view appears
+                .listStyle(PlainListStyle())
+                .navigationTitle(tripName)  // Display the trip name
+                .onAppear {
+                    friendManager.loadFriends()
+                }
             }
             .toolbar {
                 // Custom Back Button
