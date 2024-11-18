@@ -232,7 +232,7 @@ struct CalculateReceiptView: View {
         let newExpense = UserExpense(
             amount: 0,  // Ensure the totalAmount is passed correctly
             date: Date(),
-            description: nil,
+            description: "",
             splitDetails: expensesPerPerson,
             participants: Array(expensesPerPerson.keys),  // Participants who have split the expense
             payer: payer  // The person who paid

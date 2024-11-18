@@ -8,19 +8,10 @@ struct SettingsView: View {
     
     @State private var userName: String = ""
     @State private var errorMessage: String?
-    @State private var isLoggedOut = false
-    
-    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
         NavigationView {
             VStack {
-                if isLoggedOut {
-                    // Navigate to SignIn view after logout
-                    SignInView(onSignIn: {
-                        self.isLoggedOut = false
-                    })
-                } else {
                     Form {
                         Section(header: Text("Default Currency")) {
                             Picker("Currency", selection: $selectedCurrency) {
@@ -61,7 +52,6 @@ struct SettingsView: View {
                     }
                     .navigationTitle("Settings")
                 }
-            }
         }
     }
 
@@ -108,7 +98,7 @@ struct SettingsView: View {
     func logout() {
         do {
             try Auth.auth().signOut()  // Sign the user out
-            self.isLoggedOut = true  // Set the logout state to trigger the navigation
+            
         } catch let signOutError as NSError {
             self.errorMessage = "Error signing out: \(signOutError.localizedDescription)"
         }

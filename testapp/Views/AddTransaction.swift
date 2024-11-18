@@ -81,7 +81,6 @@ struct AddTransactionView: View {
                                         Text(friend.name)
                                             .font(.body)
                                             .padding(.leading)
-                                        Spacer()
                                         TextField("Amount", value: $friend.share, format: .currency(code: selectedCurrency))
                                             .keyboardType(.decimalPad)
                                             .frame(width: 100)
@@ -115,7 +114,7 @@ struct AddTransactionView: View {
                             isLoading ? AnyView(ProgressView()) : AnyView(EmptyView())
                         )
                     }
-                    .background(Color.white) // Set a background for the entire form
+                    .background(Color.blue) // Set a background for the entire form
                     .cornerRadius(12)
                     .padding()
                 }
@@ -186,7 +185,7 @@ struct AddTransactionView: View {
         let newExpense = UserExpense(
             amount: totalAmount,
             date: Date(),
-            description: description.isEmpty ? nil : description,
+            description: description,
             splitDetails: splitDetails,
             participants: friends.map { $0.name },
             payer: paidBy.name
