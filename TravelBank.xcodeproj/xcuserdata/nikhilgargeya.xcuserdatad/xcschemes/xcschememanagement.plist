@@ -65,7 +65,7 @@
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</dict>
 		<key>TravelBank.xcscheme_^#shared#^_</key>
 		<dict>
@@ -76,6 +76,24 @@
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>7DF97C482CD0980500A3B552</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>7DF97C582CD0980600A3B552</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>7DF97C622CD0980600A3B552</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>

@@ -1,7 +1,7 @@
 import Foundation
 
 class LLMService {
-    private let apiKey = "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"
+    let apiKey = Bundle.main.object(forInfoDictionaryKey: "API_KEY") as? String
     private let apiUrl = "https://api.groq.com/openai/v1/chat/completions"
 
     func getChatResponse(prompt: String, completion: @escaping (String?) -> Void) {

@@ -3,10 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7D2458812CEF0ADE006EDAF8 /* Config.xcconfig in Sources */ = {isa = PBXBuildFile; fileRef = 7D2458802CEF0ADD006EDAF8 /* Config.xcconfig */; };
+		7D2458822CEF0ADE006EDAF8 /* Config.xcconfig in Sources */ = {isa = PBXBuildFile; fileRef = 7D2458802CEF0ADD006EDAF8 /* Config.xcconfig */; };
+		7D2458832CEF0ADE006EDAF8 /* Config.xcconfig in Sources */ = {isa = PBXBuildFile; fileRef = 7D2458802CEF0ADD006EDAF8 /* Config.xcconfig */; };
 		7D32F3FE2CE41A450099DA4E /* LLMService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D32F3FD2CE41A450099DA4E /* LLMService.swift */; };
 		7D32F4002CE41BAF0099DA4E /* GroqView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D32F3FF2CE41BAF0099DA4E /* GroqView.swift */; };
 		7D4045672CD2113900200DFE /* CalculateReceipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4045662CD2113900200DFE /* CalculateReceipt.swift */; };
@@ -68,6 +71,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7D2458802CEF0ADD006EDAF8 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		7D32F3FD2CE41A450099DA4E /* LLMService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMService.swift; sourceTree = "<group>"; };
 		7D32F3FF2CE41BAF0099DA4E /* GroqView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroqView.swift; sourceTree = "<group>"; };
 		7D32F4012CE426F30099DA4E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -222,6 +226,7 @@
 				7D98631A2CE92E17002A2BFE /* Controllers */,
 				7D98631B2CE92E1F002A2BFE /* Views */,
 				7DE7CB4C2CD9823800057217 /* GoogleService-Info.plist */,
+				7D2458802CEF0ADD006EDAF8 /* Config.xcconfig */,
 				7DF97C502CD0980500A3B552 /* Assets.xcassets */,
 				7DF97C522CD0980500A3B552 /* Preview Content */,
 			);
@@ -327,7 +332,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1420;
-				LastUpgradeCheck = 1420;
+				LastUpgradeCheck = 1610;
 				TargetAttributes = {
 					7DF97C482CD0980500A3B552 = {
 						CreatedOnToolsVersion = 14.2;
@@ -343,7 +348,6 @@
 				};
 			};
 			buildConfigurationList = 7DF97C442CD0980500A3B552 /* Build configuration list for PBXProject "TravelBank" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -354,6 +358,7 @@
 			packageReferences = (
 				7DE7CB502CD9842100057217 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
+			preferredProjectObjectVersion = 77;
 			productRefGroup = 7DF97C4A2CD0980500A3B552 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -409,6 +414,7 @@
 				7D7861C92CD17EA900A88CE2 /* UserExpense.swift in Sources */,
 				7DE7CB752CD9E33B00057217 /* MainView.swift in Sources */,
 				7DE7CB662CD988ED00057217 /* UserExpenseManager.swift in Sources */,
+				7D2458822CEF0ADE006EDAF8 /* Config.xcconfig in Sources */,
 				7DE81B162CD1C4540087B521 /* TextRecognizer.swift in Sources */,
 				7DF97C792CD098CF00A3B552 /* LogView.swift in Sources */,
 				7DF97C812CD09AEC00A3B552 /* ReceiptScannerView.swift in Sources */,
@@ -431,6 +437,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D2458812CEF0ADE006EDAF8 /* Config.xcconfig in Sources */,
 				7DF97C5E2CD0980600A3B552 /* testappTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -439,6 +446,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D2458832CEF0ADE006EDAF8 /* Config.xcconfig in Sources */,
 				7DF97C6A2CD0980600A3B552 /* testappUITestsLaunchTests.swift in Sources */,
 				7DF97C682CD0980600A3B552 /* testappUITests.swift in Sources */,
 			);
@@ -496,6 +504,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -556,6 +565,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -567,6 +577,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -581,10 +592,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = testapp/testapp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"testapp/Preview Content\"";
-				DEVELOPMENT_TEAM = 9773C663L2;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 9773C663L2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = testapp/Info.plist;
@@ -596,17 +609,23 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = NG.TravelBank;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "TravelBank LLC";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -616,11 +635,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = testapp/testapp.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"testapp/Preview Content\"";
-				DEVELOPMENT_TEAM = 9773C663L2;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 9773C663L2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = testapp/Info.plist;
@@ -632,24 +653,29 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = NG.TravelBank;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "TravelBank LLC";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
 		7DF97C712CD0980600A3B552 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -669,7 +695,6 @@
 		7DF97C722CD0980600A3B552 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -689,7 +714,6 @@
 		7DF97C742CD0980600A3B552 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9773C663L2;
@@ -707,7 +731,6 @@
 		7DF97C752CD0980600A3B552 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9773C663L2;
@@ -769,7 +792,7 @@
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 9.0.0;
+				minimumVersion = 10.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
